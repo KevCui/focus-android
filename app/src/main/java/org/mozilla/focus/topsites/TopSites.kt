@@ -7,6 +7,8 @@ package org.mozilla.focus.topsites
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,11 +53,11 @@ fun TopSites(
     onRemoveTopSiteClicked: (TopSite) -> Unit,
     onRenameTopSiteClicked: (TopSite) -> Unit
 ) {
-
     Row(
         modifier = Modifier
             .padding(horizontal = 10.dp)
-            .size(width = 324.dp, height = 84.dp),
+            .size(width = 324.dp, height = 84.dp)
+            .horizontalScroll(rememberScrollState()),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(28.dp)
     ) {
