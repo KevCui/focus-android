@@ -26,8 +26,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import mozilla.components.browser.domains.CustomDomains
 import org.mozilla.focus.GleanMetrics.Autocomplete
 import org.mozilla.focus.R
@@ -36,6 +36,7 @@ import org.mozilla.focus.ext.requireComponents
 import org.mozilla.focus.settings.BaseSettingsLikeFragment
 import org.mozilla.focus.state.AppAction
 import org.mozilla.focus.state.Screen
+import org.mozilla.focus.telemetry.TelemetryWrapper
 import org.mozilla.focus.utils.ViewUtils
 import java.util.Collections
 import kotlin.coroutines.CoroutineContext
@@ -47,7 +48,7 @@ typealias DomainFormatter = (String) -> String
 open class AutocompleteListFragment : BaseSettingsLikeFragment(), CoroutineScope {
     private var job = Job()
     override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
+        get() = job + Main
     private var _binding: FragmentAutocompleteCustomdomainsBinding? = null
     protected val binding get() = _binding!!
 
@@ -201,7 +202,10 @@ open class AutocompleteListFragment : BaseSettingsLikeFragment(), CoroutineScope
 
         fun refresh(context: Context, body: (() -> Unit)? = null) {
             launch(Main) {
-                val updatedDomains = async { CustomDomains.load(context) }.await()
+                val updatedDomains =
+                    withContext(Dispatchers.Default) {
+                        CustomDomains.load(context)
+                    }
 
                 domains.clear()
                 domains.addAll(updatedDomains)
@@ -227,9 +231,8 @@ open class AutocompleteListFragment : BaseSettingsLikeFragment(), CoroutineScope
                     )
                 DomainViewHolder.LAYOUT_ID ->
                     DomainViewHolder(
-                        LayoutInflater.from(parent.context).inflate(viewType, parent, false),
-                        { AutocompleteDomainFormatter.format(it) }
-                    )
+                        LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+                    ) { AutocompleteDomainFormatter.format(it) }
                 else -> throw IllegalArgumentException("Unknown view type: $viewType")
             }
 
@@ -262,6 +265,7 @@ open class AutocompleteListFragment : BaseSettingsLikeFragment(), CoroutineScope
             launch(IO) {
                 CustomDomains.save(activity!!.applicationContext, domains)
                 Autocomplete.listOrderChanged.add()
+                TelemetryWrapper.reorderAutocompleteDomainEvent(from, to)
             }
         }
     }

@@ -29,6 +29,12 @@ object AppReducer : Reducer<AppState, AppAction> {
             is AppAction.NavigateUp -> navigateUp(state, action)
             is AppAction.OpenTab -> openTab(state, action)
             is AppAction.TopSitesChange -> topSitesChanged(state, action)
+            is AppAction.AutoplayChange -> autoplayRulesChanged(state, action)
+            is AppAction.SecretSettingsStateChange -> secretSettingsStateChanged(
+                state,
+                action
+            )
+            is AppAction.ShowEraseTabsCfrChange -> showEraseTabsCfrChanged(state, action)
         }
     }
 }
@@ -145,6 +151,27 @@ private fun topSitesChanged(state: AppState, action: AppAction.TopSitesChange): 
     return state.copy(topSites = action.topSites)
 }
 
+/**
+ * The rules of site permissions autoplay has changed.
+ */
+private fun autoplayRulesChanged(state: AppState, action: AppAction.AutoplayChange): AppState {
+    return state.copy(autoplayRulesChanged = action.value)
+}
+
+/**
+ * The state of secret settings has changed.
+ */
+private fun secretSettingsStateChanged(state: AppState, action: AppAction.SecretSettingsStateChange): AppState {
+    return state.copy(secretSettingsEnabled = action.enabled)
+}
+
+/**
+ * The state of erase tabs CFR changed
+ */
+private fun showEraseTabsCfrChanged(state: AppState, action: AppAction.ShowEraseTabsCfrChange): AppState {
+    return state.copy(showEraseTabsCfr = action.value)
+}
+
 @Suppress("ComplexMethod")
 private fun navigateUp(state: AppState, action: AppAction.NavigateUp): AppState {
     if (state.screen is Screen.Browser) {
@@ -178,6 +205,7 @@ private fun navigateUp(state: AppState, action: AppAction.NavigateUp): AppState 
         Screen.Settings.Page.SitePermissions -> Screen.Settings(page = Screen.Settings.Page.Privacy)
         Screen.Settings.Page.Autoplay -> Screen.Settings(page = Screen.Settings.Page.SitePermissions)
         Screen.Settings.Page.Studies -> Screen.Settings(page = Screen.Settings.Page.Privacy)
+        Screen.Settings.Page.SecretSettings -> Screen.Settings(page = Screen.Settings.Page.Advanced)
 
         Screen.Settings.Page.SearchList -> Screen.Settings(page = Screen.Settings.Page.Search)
         Screen.Settings.Page.SearchRemove -> Screen.Settings(page = Screen.Settings.Page.SearchList)

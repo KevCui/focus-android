@@ -4,6 +4,7 @@
 
 package org.mozilla.focus.fragment
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -38,7 +39,9 @@ import mozilla.components.feature.downloads.AbstractFetchDownloadService
 import mozilla.components.feature.downloads.DownloadsFeature
 import mozilla.components.feature.downloads.manager.FetchDownloadManager
 import mozilla.components.feature.downloads.share.ShareDownloadFeature
+import mozilla.components.feature.media.fullscreen.MediaSessionFullscreenFeature
 import mozilla.components.feature.prompts.PromptFeature
+import mozilla.components.feature.session.PictureInPictureFeature
 import mozilla.components.feature.session.SessionFeature
 import mozilla.components.feature.sitepermissions.SitePermissionsFeature
 import mozilla.components.feature.tabs.WindowFeature
@@ -46,6 +49,7 @@ import mozilla.components.feature.top.sites.TopSitesConfig
 import mozilla.components.feature.top.sites.TopSitesFeature
 import mozilla.components.lib.crash.Crash
 import mozilla.components.service.glean.private.NoExtras
+import mozilla.components.support.base.feature.UserInteractionHandler
 import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
 import mozilla.components.support.utils.Browsers
 import org.mozilla.focus.GleanMetrics.Browser
@@ -60,6 +64,7 @@ import org.mozilla.focus.browser.integration.BrowserMenuController
 import org.mozilla.focus.browser.integration.BrowserToolbarIntegration
 import org.mozilla.focus.browser.integration.FindInPageIntegration
 import org.mozilla.focus.browser.integration.FullScreenIntegration
+import org.mozilla.focus.compose.CFRPopup
 import org.mozilla.focus.contextmenu.ContextMenuCandidates
 import org.mozilla.focus.databinding.FragmentBrowserBinding
 import org.mozilla.focus.downloads.DownloadService
@@ -80,10 +85,13 @@ import org.mozilla.focus.session.ui.TabsPopup
 import org.mozilla.focus.settings.privacy.ConnectionDetailsPanel
 import org.mozilla.focus.settings.privacy.TrackingProtectionPanel
 import org.mozilla.focus.state.AppAction
+import org.mozilla.focus.telemetry.TelemetryWrapper
 import org.mozilla.focus.topsites.DefaultTopSitesStorage.Companion.TOP_SITES_MAX_LIMIT
 import org.mozilla.focus.topsites.DefaultTopSitesView
+import org.mozilla.focus.utils.Features
 import org.mozilla.focus.utils.FocusSnackbar
 import org.mozilla.focus.utils.FocusSnackbarDelegate
+import org.mozilla.focus.utils.IntentUtils
 import org.mozilla.focus.utils.StatusBarUtils
 import java.net.URLEncoder
 
@@ -93,6 +101,7 @@ import java.net.URLEncoder
 @Suppress("LargeClass", "TooManyFunctions")
 class BrowserFragment :
     BaseFragment(),
+    UserInteractionHandler,
     AccessibilityManager.AccessibilityStateChangeListener {
 
     private var _binding: FragmentBrowserBinding? = null
@@ -100,8 +109,9 @@ class BrowserFragment :
 
     private val findInPageIntegration = ViewBoundFeatureWrapper<FindInPageIntegration>()
     private val fullScreenIntegration = ViewBoundFeatureWrapper<FullScreenIntegration>()
+    private var pictureInPictureFeature: PictureInPictureFeature? = null
 
-    private val sessionFeature = ViewBoundFeatureWrapper<SessionFeature>()
+    internal val sessionFeature = ViewBoundFeatureWrapper<SessionFeature>()
     private val promptFeature = ViewBoundFeatureWrapper<PromptFeature>()
     private val contextMenuFeature = ViewBoundFeatureWrapper<ContextMenuFeature>()
     private val downloadsFeature = ViewBoundFeatureWrapper<DownloadsFeature>()
@@ -110,10 +120,12 @@ class BrowserFragment :
     private val appLinksFeature = ViewBoundFeatureWrapper<AppLinksFeature>()
     private val topSitesFeature = ViewBoundFeatureWrapper<TopSitesFeature>()
     private var sitePermissionsFeature = ViewBoundFeatureWrapper<SitePermissionsFeature>()
+    private var fullScreenMediaSessionFeature = ViewBoundFeatureWrapper<MediaSessionFullscreenFeature>()
 
     private val toolbarIntegration = ViewBoundFeatureWrapper<BrowserToolbarIntegration>()
 
     private lateinit var trackingProtectionPanel: TrackingProtectionPanel
+
     /**
      * The ID of the tab associated with this fragment.
      */
@@ -138,6 +150,7 @@ class BrowserFragment :
         return binding.root
     }
 
+    @SuppressLint("VisibleForTests")
     @Suppress("ComplexCondition", "LongMethod")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val components = requireComponents
@@ -163,6 +176,13 @@ class BrowserFragment :
                 binding.engineView
             ),
             this, view
+        )
+
+        pictureInPictureFeature = PictureInPictureFeature(
+            store = components.store,
+            activity = requireActivity(),
+            crashReporting = components.crashReporter,
+            tabId = tabId
         )
 
         contextMenuFeature.set(
@@ -279,7 +299,8 @@ class BrowserFragment :
                 config = {
                     TopSitesConfig(
                         totalSites = TOP_SITES_MAX_LIMIT,
-                        frecencyConfig = null
+                        frecencyConfig = null,
+                        providerConfig = null
                     )
                 }
             ),
@@ -310,7 +331,32 @@ class BrowserFragment :
             )
         }
 
+        // Feature that handles MediaSession state changes
+        fullScreenMediaSessionFeature.set(
+            feature = MediaSessionFullscreenFeature(requireActivity(), requireComponents.store),
+            owner = this,
+            view = view
+        )
+
         setSitePermissions(view)
+    }
+
+    private fun showCfrForShieldToolbarIcon() {
+        if (Features.SHOULD_SHOW_CFR_FOR_SHIELD_TOOLBAR_ICON &&
+            requireContext().settings.shouldShowCfrForShieldToolbarIcon &&
+            tab.content.securityInfo.secure
+        ) {
+            CFRPopup(
+                container = binding.root,
+                text = getString(R.string.cfr_for_toolbar_shield_icon),
+                anchor = binding.browserToolbar.rootView.findViewById(
+                    R.id.mozac_browser_toolbar_tracking_protection_indicator
+                ),
+                onDismiss = { requireContext().settings.shouldShowCfrForShieldToolbarIcon = false }
+            ).apply {
+                show()
+            }
+        }
     }
 
     private fun setSitePermissions(rootView: View) {
@@ -332,6 +378,10 @@ class BrowserFragment :
             owner = this,
             view = rootView
         )
+        if (requireComponents.appStore.state.autoplayRulesChanged) {
+            requireComponents.sessionUseCases.reload(tabId)
+            requireComponents.appStore.dispatch(AppAction.AutoplayChange(false))
+        }
     }
 
     override fun onAccessibilityStateChanged(enabled: Boolean) = when (enabled) {
@@ -393,7 +443,8 @@ class BrowserFragment :
                 sessionUseCases = requireComponents.sessionUseCases,
                 onUrlLongClicked = ::onUrlLongClicked,
                 eraseActionListener = { erase(shouldEraseAllTabs = true) },
-                tabCounterListener = ::tabCounterListener
+                tabCounterListener = ::tabCounterListener,
+                onTrackingProtectionShown = ::showCfrForShieldToolbarIcon
             ),
             owner = this,
             view = binding.browserToolbar
@@ -502,6 +553,9 @@ class BrowserFragment :
 
             DownloadState.Status.COMPLETED -> {
                 Downloads.downloadCompleted.record(NoExtras())
+
+                TelemetryWrapper.downloadDialogDownloadEvent(sentToDownload = true)
+
                 showDownloadCompletedSnackbar(state, extension)
             }
 
@@ -590,8 +644,10 @@ class BrowserFragment :
         }
     }
 
+    override fun onHomePressed() = pictureInPictureFeature?.onHomePressed() ?: false
+
     @Suppress("ComplexMethod", "ReturnCount")
-    fun onBackPressed(): Boolean {
+    override fun onBackPressed(): Boolean {
         if (findInPageIntegration.onBackPressed()) {
             return true
         } else if (fullScreenIntegration.onBackPressed()) {
@@ -606,6 +662,7 @@ class BrowserFragment :
                 Browser.backButtonPressed.record(
                     Browser.BackButtonPressedExtra("erase_to_external_app")
                 )
+                TelemetryWrapper.eraseBackToAppEvent()
 
                 // This session has been started from a VIEW intent. Go back to the previous app
                 // immediately and erase the current browsing session.
@@ -625,6 +682,8 @@ class BrowserFragment :
                 Browser.backButtonPressed.record(
                     Browser.BackButtonPressedExtra("erase_to_home")
                 )
+
+                TelemetryWrapper.eraseBackToHomeEvent()
 
                 erase()
             }
@@ -656,16 +715,21 @@ class BrowserFragment :
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, title)
         }
 
-        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_dialog_title)))
+        TelemetryWrapper.shareEvent()
+        startActivity(
+            IntentUtils.getIntentChooser(
+                context = requireContext(),
+                intent = shareIntent,
+                chooserTitle = getString(R.string.share_dialog_title)
+            )
+        )
     }
 
     private fun openInBrowser() {
-        // Calling stop() on the GeckoSession helps preventing "Display already acquired" crashes from happening.
-        // See also https://bugzilla.mozilla.org/show_bug.cgi?id=1741899.
-        requireComponents.sessionUseCases.stopLoading(tabId)
-
         // Release the session from this view so that it can immediately be rendered by a different view
         sessionFeature.get()?.release()
+
+        TelemetryWrapper.openFullBrowser()
 
         if (requireComponents.experimentalFeatures.tabs.isMultiTab) {
             requireComponents.customTabsUseCases.migrate(tab.id)
@@ -703,10 +767,13 @@ class BrowserFragment :
         )
 
         TabCount.sessionButtonTapped.record(TabCount.SessionButtonTappedExtra(openedTabs))
+
+        TelemetryWrapper.openTabsTrayEvent()
     }
 
     private fun showFindInPageBar() {
         findInPageIntegration.get()?.show(tab)
+        TelemetryWrapper.findInPageMenuEvent()
     }
 
     private fun openSelectBrowser() {
@@ -727,6 +794,8 @@ class BrowserFragment :
         fragment.show(requireFragmentManager(), OpenWithFragment.FRAGMENT_TAG)
 
         OpenWith.listDisplayed.record(OpenWith.ListDisplayedExtra(apps.size))
+
+        TelemetryWrapper.openSelectionEvent()
     }
 
     internal fun closeCustomTab() {
@@ -734,7 +803,7 @@ class BrowserFragment :
         requireActivity().finish()
     }
 
-    fun setShouldRequestDesktop(enabled: Boolean) {
+    private fun setShouldRequestDesktop(enabled: Boolean) {
         if (enabled) {
             PreferenceManager.getDefaultSharedPreferences(context).edit()
                 .putBoolean(

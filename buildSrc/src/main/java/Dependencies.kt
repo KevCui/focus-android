@@ -3,10 +3,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 object Versions {
-    const val compose_version = "1.0.4"
+    const val compose_version = "1.1.0"
+    const val leakcanary = "2.8.1"
 
     object AndroidX {
-        const val activity_compose = "1.3.1"
         const val annotation = "1.1.0"
         const val appcompat = "1.3.0"
         const val arch = "2.1.0"
@@ -23,11 +23,12 @@ object Versions {
     object Google {
         const val material = "1.2.1"
         const val accompanist = "0.16.1"
+        const val play = "1.10.3"
     }
 
     object Kotlin {
-        const val version = "1.5.31"
-        const val coroutines = "1.5.2"
+        const val version = "1.6.10"
+        const val coroutines = "1.6.0"
     }
 
     object Gradle {
@@ -63,8 +64,10 @@ object Dependencies {
 
     const val google_material = "com.google.android.material:material:${Versions.Google.material}"
     const val google_accompanist_insets_ui = "com.google.accompanist:accompanist-insets-ui:${Versions.Google.accompanist}"
+    const val google_play = "com.google.android.play:core:${Versions.Google.play}"
     const val kotlin_gradle_plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.Gradle.kotlin_plugin}"
     const val android_gradle_plugin = "com.android.tools.build:gradle:${Versions.Gradle.android_plugin}"
+    const val leakcanary = "com.squareup.leakcanary:leakcanary-android-core:${Versions.leakcanary}"
 
     const val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:${Versions.Kotlin.version}"
     const val kotlin_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.Kotlin.coroutines}"

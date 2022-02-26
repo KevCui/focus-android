@@ -85,8 +85,7 @@ class GleanMetricsService(context: Context) : MetricsService {
                     Browser.defaultSearchEngine.set(getDefaultSearchEngineIdentifierForTelemetry(context))
                 }
 
-                // Disabled until data-review r+
-                // activationPing.checkAndSend()
+                activationPing.checkAndSend()
             }
         }
     }
@@ -103,8 +102,10 @@ class GleanMetricsService(context: Context) : MetricsService {
 
         Browser.isDefault.set(isFocusDefaultBrowser)
         Browser.localeOverride.set(components.store.state.locale?.displayName ?: "none")
-        val shortcutsOnHomeNumber =
-            components.topSitesStorage.getTopSites(TOP_SITES_MAX_LIMIT, null).size
+        val shortcutsOnHomeNumber = components.topSitesStorage.getTopSites(
+            totalSites = TOP_SITES_MAX_LIMIT,
+            frecencyConfig = null
+        ).size
         Shortcuts.shortcutsOnHomeNumber.set(shortcutsOnHomeNumber.toLong())
 
         val installSourcePackage = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {

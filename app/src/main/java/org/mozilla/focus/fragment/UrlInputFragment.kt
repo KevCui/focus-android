@@ -35,6 +35,7 @@ import mozilla.components.service.glean.private.NoExtras
 import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
 import mozilla.components.support.ktx.android.view.hideKeyboard
 import mozilla.components.support.utils.ThreadUtils
+import org.mozilla.focus.GleanMetrics.BrowserSearch
 import org.mozilla.focus.GleanMetrics.SearchBar
 import org.mozilla.focus.R
 import org.mozilla.focus.databinding.FragmentUrlinputBinding
@@ -49,6 +50,7 @@ import org.mozilla.focus.searchsuggestions.SearchSuggestionsViewModel
 import org.mozilla.focus.searchsuggestions.ui.SearchSuggestionsFragment
 import org.mozilla.focus.state.AppAction
 import org.mozilla.focus.state.Screen
+import org.mozilla.focus.telemetry.TelemetryWrapper
 import org.mozilla.focus.tips.TipManager
 import org.mozilla.focus.topsites.DefaultTopSitesStorage.Companion.TOP_SITES_MAX_LIMIT
 import org.mozilla.focus.topsites.DefaultTopSitesView
@@ -173,11 +175,12 @@ class UrlInputFragment :
         searchSuggestionsViewModel.selectedSearchSuggestion.observe(
             viewLifecycleOwner
         ) {
+            val isSuggestion = searchSuggestionsViewModel.searchQuery.value != it
             it?.let {
                 if (searchSuggestionsViewModel.alwaysSearch) {
-                    onSearch(it, alwaysSearch = true)
+                    onSearch(it, isSuggestion = false, alwaysSearch = true)
                 } else {
-                    onSearch(it)
+                    onSearch(it, isSuggestion)
                 }
                 searchSuggestionsViewModel.clearSearchSuggestion()
             }
@@ -302,7 +305,8 @@ class UrlInputFragment :
                 config = {
                     TopSitesConfig(
                         totalSites = TOP_SITES_MAX_LIMIT,
-                        frecencyConfig = null
+                        frecencyConfig = null,
+                        providerConfig = null
                     )
                 }
             ),
@@ -350,7 +354,11 @@ class UrlInputFragment :
 
         binding.browserToolbar.editMode()
         setHomeMenu()
-        updateTipsLabel()
+        if (Features.SHOULD_SHOW_HOME_PAGE_PRO_TIPS) {
+            updateTipsLabel()
+        } else {
+            binding.homeTips.visibility = View.GONE
+        }
     }
 
     private fun setHomeMenu() {
@@ -579,6 +587,8 @@ class UrlInputFragment :
 
             openUrl(url, searchTerms)
 
+            TelemetryWrapper.urlBarEvent(isUrl)
+
             if (isUrl) {
                 SearchBar.enteredUrl.record(NoExtras())
             } else {
@@ -586,6 +596,8 @@ class UrlInputFragment :
                 SearchBar.performedSearch.record(
                     SearchBar.PerformedSearchExtra(defaultSearchEngineName)
                 )
+                TelemetryWrapper.searchEnterEvent()
+                BrowserSearch.searchCount["action"].add()
             }
         }
     }
@@ -634,7 +646,7 @@ class UrlInputFragment :
         return Triple(isUrl, url, searchTerms)
     }
 
-    private fun onSearch(query: String, alwaysSearch: Boolean = false) {
+    private fun onSearch(query: String, isSuggestion: Boolean = false, alwaysSearch: Boolean = false) {
         if (alwaysSearch) {
             val url = SearchUtils.createSearchUrl(context, query)
             openUrl(url, query)
@@ -648,6 +660,9 @@ class UrlInputFragment :
 
             openUrl(searchUrl, searchTerms)
         }
+
+        TelemetryWrapper.searchSelectEvent(isSuggestion)
+        BrowserSearch.searchCount["suggestion"].add()
     }
 
     private fun openUrl(url: String, searchTerms: String?) {

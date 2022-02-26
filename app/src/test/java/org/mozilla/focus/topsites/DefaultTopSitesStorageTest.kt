@@ -5,7 +5,8 @@
 package org.mozilla.focus.topsites
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import mozilla.components.feature.top.sites.PinnedSiteStorage
 import mozilla.components.feature.top.sites.TopSite
 import mozilla.components.support.test.mock
@@ -24,7 +25,7 @@ class DefaultTopSitesStorageTest {
     private val pinnedSitesStorage: PinnedSiteStorage = mock()
 
     @Test
-    fun `WHEN a top site is added THEN the pinned sites storage is called`() = runBlockingTest {
+    fun `WHEN a top site is added THEN the pinned sites storage is called`() = runTest(UnconfinedTestDispatcher()) {
         val defaultTopSitesStorage = DefaultTopSitesStorage(
             pinnedSitesStorage,
             coroutineContext
@@ -40,18 +41,17 @@ class DefaultTopSitesStorageTest {
     }
 
     @Test
-    fun `WHEN a top site is removed THEN the pinned sites storage is called`() = runBlockingTest {
+    fun `WHEN a top site is removed THEN the pinned sites storage is called`() = runTest(UnconfinedTestDispatcher()) {
         val defaultTopSitesStorage = DefaultTopSitesStorage(
             pinnedSitesStorage,
             coroutineContext
         )
 
-        val pinnedSite = TopSite(
+        val pinnedSite = TopSite.Pinned(
             id = 2,
             title = "Firefox",
             url = "https://firefox.com",
-            createdAt = 2,
-            type = TopSite.Type.PINNED
+            createdAt = 2
         )
 
         defaultTopSitesStorage.removeTopSite(pinnedSite)
@@ -60,18 +60,17 @@ class DefaultTopSitesStorageTest {
     }
 
     @Test
-    fun `WHEN a top site is updated THEN the pinned sites storage is called`() = runBlockingTest {
+    fun `WHEN a top site is updated THEN the pinned sites storage is called`() = runTest(UnconfinedTestDispatcher()) {
         val defaultTopSitesStorage = DefaultTopSitesStorage(
             pinnedSitesStorage,
             coroutineContext
         )
 
-        val pinnedSite = TopSite(
+        val pinnedSite = TopSite.Pinned(
             id = 2,
             title = "Wikipedia",
             url = "https://wikipedia.com",
-            createdAt = 2,
-            type = TopSite.Type.PINNED
+            createdAt = 2
         )
         defaultTopSitesStorage.updateTopSite(
             pinnedSite,
@@ -87,25 +86,23 @@ class DefaultTopSitesStorageTest {
     }
 
     @Test
-    fun `WHEN getTopSites is called THEN the appropriate top sites are returned`() = runBlockingTest {
+    fun `WHEN getTopSites is called THEN the appropriate top sites are returned`() = runTest {
         val defaultTopSitesStorage = DefaultTopSitesStorage(
             pinnedSitesStorage,
             coroutineContext
         )
 
-        val pinnedSite1 = TopSite(
+        val pinnedSite1 = TopSite.Pinned(
             id = 2,
             title = "Wikipedia",
             url = "https://wikipedia.com",
-            createdAt = 2,
-            type = TopSite.Type.PINNED
+            createdAt = 2
         )
-        val pinnedSite2 = TopSite(
+        val pinnedSite2 = TopSite.Pinned(
             id = 3,
             title = "Example",
             url = "https://example.com",
-            createdAt = 3,
-            type = TopSite.Type.PINNED
+            createdAt = 3
         )
 
         whenever(pinnedSitesStorage.getPinnedSites()).thenReturn(
@@ -115,19 +112,26 @@ class DefaultTopSitesStorageTest {
             )
         )
 
-        var topSites = defaultTopSitesStorage.getTopSites(0, frecencyConfig = null)
+        var topSites = defaultTopSitesStorage.getTopSites(
+            totalSites = 0,
+            frecencyConfig = null
+        )
+
         assertTrue(topSites.isEmpty())
 
-        topSites = defaultTopSitesStorage.getTopSites(1, frecencyConfig = null)
+        topSites = defaultTopSitesStorage.getTopSites(totalSites = 1)
+
         assertEquals(1, topSites.size)
         assertEquals(pinnedSite1, topSites[0])
 
-        topSites = defaultTopSitesStorage.getTopSites(2, frecencyConfig = null)
+        topSites = defaultTopSitesStorage.getTopSites(totalSites = 2)
+
         assertEquals(2, topSites.size)
         assertEquals(pinnedSite1, topSites[0])
         assertEquals(pinnedSite2, topSites[1])
 
-        topSites = defaultTopSitesStorage.getTopSites(5, frecencyConfig = null)
+        topSites = defaultTopSitesStorage.getTopSites(totalSites = 5)
+
         assertEquals(2, topSites.size)
         assertEquals(pinnedSite1, topSites[0])
         assertEquals(pinnedSite2, topSites[1])

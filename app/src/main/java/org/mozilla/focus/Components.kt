@@ -21,6 +21,8 @@ import mozilla.components.feature.contextmenu.ContextMenuUseCases
 import mozilla.components.feature.customtabs.store.CustomTabsServiceStore
 import mozilla.components.feature.downloads.DownloadMiddleware
 import mozilla.components.feature.downloads.DownloadsUseCases
+import mozilla.components.feature.media.MediaSessionFeature
+import mozilla.components.feature.media.middleware.RecordingDevicesMiddleware
 import mozilla.components.feature.prompts.PromptMiddleware
 import mozilla.components.feature.search.SearchUseCases
 import mozilla.components.feature.search.middleware.AdsTelemetryMiddleware
@@ -48,6 +50,7 @@ import mozilla.components.service.nimbus.NimbusApi
 import mozilla.components.support.locale.LocaleManager
 import org.mozilla.focus.activity.MainActivity
 import org.mozilla.focus.browser.BlockedTrackersMiddleware
+import org.mozilla.focus.cfr.CfrMiddleware
 import org.mozilla.focus.components.EngineProvider
 import org.mozilla.focus.downloads.DownloadService
 import org.mozilla.focus.engine.AppContentInterceptor
@@ -57,6 +60,7 @@ import org.mozilla.focus.experiments.ExperimentalFeatures
 import org.mozilla.focus.experiments.createNimbus
 import org.mozilla.focus.ext.components
 import org.mozilla.focus.ext.settings
+import org.mozilla.focus.media.MediaSessionService
 import org.mozilla.focus.notification.PrivateNotificationMiddleware
 import org.mozilla.focus.search.SearchFilterMiddleware
 import org.mozilla.focus.search.SearchMigration
@@ -67,6 +71,8 @@ import org.mozilla.focus.tabs.MergeTabsMiddleware
 import org.mozilla.focus.telemetry.GleanMetricsService
 import org.mozilla.focus.telemetry.TelemetryMiddleware
 import org.mozilla.focus.topsites.DefaultTopSitesStorage
+import org.mozilla.focus.utils.Features
+import org.mozilla.focus.utils.IntentUtils
 import org.mozilla.focus.utils.Settings
 import java.util.Locale
 
@@ -118,7 +124,7 @@ class Components(
 
     @Suppress("DEPRECATION")
     private val locationService: LocationService by lazy {
-        if (BuildConfig.MLS_TOKEN.isNullOrEmpty()) {
+        if (BuildConfig.MLS_TOKEN.isEmpty()) {
             LocationService.default()
         } else {
             MozillaLocationService(context, client.unwrap(), BuildConfig.MLS_TOKEN)
@@ -126,6 +132,11 @@ class Components(
     }
 
     val store by lazy {
+        val cfrMiddleware = if (Features.SHOW_ERASE_CFR) {
+            listOf(CfrMiddleware(context.components))
+        } else {
+            listOf()
+        }
         BrowserStore(
             middleware = listOf(
                 PrivateNotificationMiddleware(context),
@@ -142,8 +153,11 @@ class Components(
                 AdsTelemetryMiddleware(adsTelemetry),
                 BlockedTrackersMiddleware(context),
                 MergeTabsMiddleware(context),
-            ) + EngineMiddleware.create(engine)
-        )
+                RecordingDevicesMiddleware(context),
+            ) + EngineMiddleware.create(engine) + cfrMiddleware
+        ).apply {
+            MediaSessionFeature(context, MediaSessionService::class.java, this).start()
+        }
     }
 
     val migrator by lazy { EngineProvider.provideTrackingProtectionMigrator(context) }
@@ -203,7 +217,7 @@ class Components(
 private fun createCrashReporter(context: Context): CrashReporter {
     val services = mutableListOf<CrashReporterService>()
 
-    if (!BuildConfig.SENTRY_TOKEN.isNullOrEmpty()) {
+    if (BuildConfig.SENTRY_TOKEN.isNotEmpty()) {
         val sentryService = SentryService(
             context,
             BuildConfig.SENTRY_TOKEN,
@@ -237,7 +251,7 @@ private fun createCrashReporter(context: Context): CrashReporter {
         context,
         0,
         intent,
-        0
+        IntentUtils.defaultIntentPendingFlags
     )
 
     return CrashReporter(

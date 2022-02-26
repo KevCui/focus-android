@@ -7,7 +7,9 @@ package org.mozilla.focus.fragment
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
@@ -23,6 +25,7 @@ import org.mozilla.focus.R
 import org.mozilla.focus.ext.components
 import org.mozilla.focus.shortcut.HomeScreen
 import org.mozilla.focus.shortcut.IconGenerator
+import org.mozilla.focus.telemetry.TelemetryWrapper
 
 /**
  * Fragment displaying a dialog where a user can change the title for a homescreen shortcut
@@ -32,7 +35,6 @@ class AddToHomescreenDialogFragment : DialogFragment() {
     @Suppress("LongMethod")
     override fun onCreateDialog(bundle: Bundle?): AlertDialog {
         AddToHomeScreen.dialogDisplayed.record(NoExtras())
-
         val url = requireArguments().getString(URL)
         val title = requireArguments().getString(TITLE)
         val blockingEnabled = requireArguments().getBoolean(BLOCKING_ENABLED)
@@ -85,6 +87,9 @@ class AddToHomescreenDialogFragment : DialogFragment() {
 
         addToHomescreenDialogCancelButton.setOnClickListener {
             AddToHomeScreen.cancelButtonTapped.record(NoExtras())
+
+            TelemetryWrapper.cancelAddToHomescreenShortcutEvent()
+
             dismiss()
         }
 
@@ -105,6 +110,8 @@ class AddToHomescreenDialogFragment : DialogFragment() {
                 )
             )
 
+            TelemetryWrapper.addToHomescreenShortcutEvent()
+
             PreferenceManager.getDefaultSharedPreferences(context).edit()
                 .putBoolean(
                     requireContext().getString(R.string.has_added_to_home_screen),
@@ -114,22 +121,17 @@ class AddToHomescreenDialogFragment : DialogFragment() {
         }
     }
 
-    @Suppress("DEPRECATION") // https://github.com/mozilla-mobile/focus-android/issues/4958
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        val dialog = dialog
-        if (dialog != null) {
-            val window = dialog.window
-            window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
-        }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     companion object {
-        val FRAGMENT_TAG = "add-to-homescreen-prompt-dialog"
-        private val URL = "url"
-        private val TITLE = "title"
-        private val BLOCKING_ENABLED = "blocking_enabled"
-        private val REQUEST_DESKTOP = "request_desktop"
+        const val FRAGMENT_TAG = "add-to-homescreen-prompt-dialog"
+        private const val URL = "url"
+        private const val TITLE = "title"
+        private const val BLOCKING_ENABLED = "blocking_enabled"
+        private const val REQUEST_DESKTOP = "request_desktop"
 
         fun newInstance(
             url: String,

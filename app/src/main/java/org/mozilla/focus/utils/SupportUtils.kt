@@ -5,17 +5,14 @@
 
 package org.mozilla.focus.utils
 
-import android.annotation.TargetApi
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
-import android.provider.Settings
 import androidx.fragment.app.FragmentActivity
 import mozilla.components.browser.state.state.SessionState
 import mozilla.components.feature.customtabs.createCustomTabConfigFromIntent
+import org.mozilla.focus.BuildConfig
 import org.mozilla.focus.activity.CustomTabActivity
 import org.mozilla.focus.ext.components
 import org.mozilla.focus.locale.Locales
@@ -26,6 +23,8 @@ import java.util.Locale
 
 object SupportUtils {
     const val HELP_URL = "https://support.mozilla.org/kb/what-firefox-focus-android"
+    const val FOCUS_PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=${BuildConfig.APPLICATION_ID}"
+    const val RATE_APP_URL = "market://details?id=" + BuildConfig.APPLICATION_ID
     const val DEFAULT_BROWSER_URL = "https://support.mozilla.org/kb/set-firefox-focus-default-browser-android"
     const val PRIVACY_NOTICE_URL = "https://www.mozilla.org/privacy/firefox-focus/"
     const val PRIVACY_NOTICE_KLAR_URL = "https://www.mozilla.org/de/privacy/firefox-klar/"
@@ -49,7 +48,8 @@ object SupportUtils {
         WHATS_NEW_KLAR("whats-new-firefox-klar-android"),
         SEARCH_SUGGESTIONS("search-suggestions-focus-android"),
         ALLOWLIST("focus-android-allowlist"),
-        STUDIES("how-opt-out-studies-firefox-focus-android")
+        STUDIES("how-opt-out-studies-firefox-focus-android"),
+        HTTPS_ONLY("https-only-prefs-focus")
     }
 
     fun getGenericSumoURLForTopic(topic: SumoTopic): String {
@@ -117,16 +117,5 @@ object SupportUtils {
             }
 
         activity.startActivity(openCustomTabActivityIntent)
-    }
-
-    @TargetApi(Build.VERSION_CODES.N)
-    fun openDefaultAppsSettings(context: Context) {
-        try {
-            val intent = Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS)
-            context.startActivity(intent)
-        } catch (e: ActivityNotFoundException) {
-            // In some cases, a matching Activity may not exist (according to the Android docs).
-            openDefaultBrowserSumoPage(context)
-        }
     }
 }

@@ -17,6 +17,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mozilla.focus.activity.robots.searchScreen
+import org.mozilla.focus.helpers.FeatureSettingsHelper
 import org.mozilla.focus.helpers.MainActivityIntentsTestRule
 import org.mozilla.focus.helpers.TestHelper.isPackageInstalled
 import org.mozilla.focus.helpers.TestHelper.readTestAsset
@@ -28,12 +29,15 @@ import java.io.IOException
 @RunWith(AndroidJUnit4ClassRunner::class)
 class OpenInExternalBrowserDialogueTest {
     private lateinit var webServer: MockWebServer
+    private val featureSettingsHelper = FeatureSettingsHelper()
 
     @get: Rule
     var mActivityTestRule = MainActivityIntentsTestRule(showFirstRun = false)
 
     @Before
     fun setUp() {
+        featureSettingsHelper.setShieldIconCFREnabled(false)
+        featureSettingsHelper.setNumberOfTabsOpened(4)
         webServer = MockWebServer()
         try {
             webServer.enqueue(
@@ -50,6 +54,7 @@ class OpenInExternalBrowserDialogueTest {
     fun tearDown() {
         mActivityTestRule.activity.finishAndRemoveTask()
         webServer.shutdown()
+        featureSettingsHelper.resetAllFeatureFlags()
     }
 
     @SmokeTest

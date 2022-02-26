@@ -20,6 +20,8 @@ import org.mozilla.focus.ext.settings
 import org.mozilla.focus.settings.BaseSettingsFragment
 import org.mozilla.focus.state.AppAction
 import org.mozilla.focus.state.Screen
+import org.mozilla.focus.telemetry.TelemetryWrapper
+import org.mozilla.focus.utils.Features
 import org.mozilla.focus.widget.CookiesPreference
 
 class PrivacySecuritySettingsFragment :
@@ -39,6 +41,11 @@ class PrivacySecuritySettingsFragment :
             )
         ) {
             preferenceScreen.removePreference(biometricPreference)
+        }
+        if (!Features.SHOULD_SHOW_TOOLTIP_FOR_PRIVACY_SECURITY_SETTINGS_SCREEN ||
+            !requireContext().settings.shouldShowPrivacySecuritySettingsToolTip
+        ) {
+            preferenceScreen.removePreference(findPreference(getString(R.string.pref_key_tool_tip)))
         }
 
         val preferencesListener = EngineSharedPreferencesListener(requireContext())
@@ -79,6 +86,7 @@ class PrivacySecuritySettingsFragment :
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         recordTelemetry(key, sharedPreferences.all[key])
+        TelemetryWrapper.settingsEvent(key, sharedPreferences.all[key].toString())
         updateStealthToggleAvailability()
     }
 
@@ -136,6 +144,9 @@ class PrivacySecuritySettingsFragment :
         when (preference.key) {
             resources.getString(R.string.pref_key_screen_exceptions) -> {
                 TrackingProtectionExceptions.allowListOpened.record(NoExtras())
+
+                TelemetryWrapper.openExceptionsListSetting()
+
                 requireComponents.appStore.dispatch(
                     AppAction.OpenSettings(page = Screen.Settings.Page.PrivacyExceptions)
                 )

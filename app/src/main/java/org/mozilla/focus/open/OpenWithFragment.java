@@ -29,6 +29,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import org.mozilla.focus.GleanMetrics.OpenWith;
 import org.mozilla.focus.R;
+import org.mozilla.focus.telemetry.TelemetryWrapper;
 
 public class OpenWithFragment extends AppCompatDialogFragment implements AppAdapter.OnAppSelectedListener {
     public static final String FRAGMENT_TAG = "open_with";
@@ -138,10 +139,14 @@ public class OpenWithFragment extends AppCompatDialogFragment implements AppAdap
     @Override
     public void onAppSelected(AppAdapter.App app) {
         final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getArguments().getString(ARGUMENT_URL)));
-        intent.setPackage(app.getPackageName());
+        intent.setClassName(app.getPackageName(), app.getActivityName());
         startActivity(intent);
 
         OpenWith.INSTANCE.listItemTapped().record(new OpenWith.ListItemTappedExtra(app.getPackageName().contains("mozilla")));
+
+        if (app.getPackageName().contains("firefox")) {
+            TelemetryWrapper.openFirefoxEvent();
+        }
 
         dismiss();
     }

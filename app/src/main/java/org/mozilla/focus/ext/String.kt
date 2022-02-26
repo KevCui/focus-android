@@ -38,7 +38,7 @@ fun String.beautifyUrl(): String {
     // Append the truncated path
 
     val truncatedPath = uri.truncatedPath()
-    if (!truncatedPath.isNullOrEmpty()) {
+    if (truncatedPath.isNotEmpty()) {
         beautifulUrl.append(truncatedPath)
     }
 
@@ -59,24 +59,6 @@ fun String.beautifyUrl(): String {
     }
 
     return beautifulUrl.toString()
-}
-
-/**
- * If this string starts with the one or more of the given [prefixes] (in order and ignoring case),
- * returns a copy of this string with the prefixes removed. Otherwise, returns this string.
- */
-fun String.removePrefixesIgnoreCase(vararg prefixes: String): String {
-    var value = this
-    var lower = this.lowercase()
-
-    prefixes.forEach {
-        if (lower.startsWith(it.lowercase())) {
-            value = value.substring(it.length)
-            lower = lower.substring(it.length)
-        }
-    }
-
-    return value
 }
 
 /**

@@ -14,11 +14,12 @@ import mozilla.components.concept.engine.Engine
 import mozilla.components.concept.engine.EngineSession
 import mozilla.components.feature.sitepermissions.SitePermissionsRules
 import org.mozilla.focus.R
-import org.mozilla.focus.ext.components
 import org.mozilla.focus.fragment.FirstrunFragment
 import org.mozilla.focus.searchsuggestions.SearchSuggestionsPreferences
 import org.mozilla.focus.settings.permissions.AutoplayOption
 import org.mozilla.focus.settings.permissions.getValueByPrefKey
+
+const val ERASE_CFR_LIMIT = 3
 
 /**
  * A simple wrapper for SharedPreferences that makes reading preference a little bit easier.
@@ -158,8 +159,6 @@ class Settings(
     }
 
     private val resources: Resources = context.resources
-    val hasAddedToHomeScreen: Boolean
-        get() = preferences.getBoolean(getPreferenceKey(R.string.has_added_to_home_screen), false)
 
     @Deprecated("This is no longer used. Read search engines from BrowserStore instead")
     val defaultSearchEngineName: String
@@ -179,12 +178,21 @@ class Settings(
                 .commit()
         }
 
-    fun shouldBlockImages(): Boolean =
-        // Not shipping in v1 (#188)
-            /* preferences.getBoolean(
-                    resources.getString(R.string.pref_key_performance_block_images),
-                    false); */
-        false
+    var shouldShowCfrForShieldToolbarIcon: Boolean
+        get() = preferences.getBoolean(getPreferenceKey(R.string.pref_cfr_visibility_for_shield_toolbar_icon), true)
+        set(value) {
+            preferences.edit()
+                .putBoolean(getPreferenceKey(R.string.pref_cfr_visibility_for_shield_toolbar_icon), value)
+                .apply()
+        }
+
+    var shouldShowPrivacySecuritySettingsToolTip: Boolean
+        get() = preferences.getBoolean(getPreferenceKey(R.string.pref_tool_tip_privacy_security_settings), true)
+        set(value) {
+            preferences.edit()
+                .putBoolean(getPreferenceKey(R.string.pref_tool_tip_privacy_security_settings), value)
+                .apply()
+        }
 
     private var autoplayPrefKey: String? = preferences.getString(
         getPreferenceKey(R.string.pref_key_autoplay),
@@ -195,7 +203,6 @@ class Settings(
         preferences.edit()
             .putString(getPreferenceKey(R.string.pref_key_autoplay), prefKey)
             .apply()
-        context.components.sessionUseCases.reload.invoke(context.components.store.state.selectedTabId)
         currentAutoplayOption = getValueByPrefKey(autoplayPrefKey = prefKey, context = context)
     }
 
@@ -279,7 +286,7 @@ class Settings(
             true
         )
 
-    fun shouldUseSafeBrowsing() =
+    private fun shouldUseSafeBrowsing() =
         preferences.getBoolean(
             getPreferenceKey(R.string.pref_key_safe_browsing),
             true
@@ -314,16 +321,6 @@ class Settings(
 
     fun userHasDismissedNoSuggestionsMessage(): Boolean =
         preferences.getBoolean(SearchSuggestionsPreferences.DISMISSED_NO_SUGGESTIONS_PREF, false)
-
-    fun isDefaultBrowser() = preferences.getBoolean(
-        getPreferenceKey(R.string.pref_key_default_browser),
-        false
-    )
-
-    fun hasOpenedInNewTab() = preferences.getBoolean(
-        getPreferenceKey(R.string.has_opened_new_tab),
-        false
-    )
 
     fun hasRequestedDesktop() = preferences.getBoolean(
         getPreferenceKey(R.string.has_requested_desktop),
@@ -375,11 +372,31 @@ class Settings(
         false
     )
 
+    // Store how many tabs were opened until now, but the max value which can be stored is 4
+    // since this values is used to decide if we should display the erase cfr
+    var numberOfTabsOpened: Int
+        get() = preferences.getInt(
+            context.getString(R.string.number_of_opened_tabs),
+            0
+        )
+        set(value) {
+            if (value <= ERASE_CFR_LIMIT + 1) {
+                preferences.edit()
+                    .putInt(context.getString(R.string.number_of_opened_tabs), value)
+                    .apply()
+            }
+        }
+
+    var shouldUseNimbusPreview: Boolean
+        get() = preferences.getBoolean(getPreferenceKey(R.string.pref_key_use_nimbus_preview), true)
+        set(value) {
+            preferences.edit()
+                .putBoolean(getPreferenceKey(R.string.pref_key_use_nimbus_preview), value)
+                .commit()
+        }
+
     fun getHttpsOnlyMode(): Engine.HttpsOnlyMode {
-        return if (
-            Features.HTTPS_ONLY_MODE &&
-            preferences.getBoolean(getPreferenceKey(R.string.pref_key_https_only), true)
-        ) {
+        return if (preferences.getBoolean(getPreferenceKey(R.string.pref_key_https_only), true)) {
             Engine.HttpsOnlyMode.ENABLED
         } else {
             Engine.HttpsOnlyMode.DISABLED

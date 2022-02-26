@@ -14,7 +14,7 @@ queue_rules:
       - status-success=lint-lint
       - status-success=test-debug
       - status-success=ui-test-x86-beta
-      - status-success=ui-test-x86-debug
+      #- status-success=ui-test-x86-debug # Disabled until #6428 is fixed.
       - status-success=ui-test-x86-nightly
 pull_request_rules:
   - name: Needs landing - Rebase
@@ -52,3 +52,9 @@ pull_request_rules:
         method: rebase
         name: default
         rebase_fallback: none
+  - name: Relbot - delete head branch after merge
+    conditions:
+      - author=github-actions[bot]
+      - merged
+    actions:
+      delete_head_branch:
