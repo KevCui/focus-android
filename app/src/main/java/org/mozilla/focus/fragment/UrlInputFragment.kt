@@ -55,7 +55,6 @@ import org.mozilla.focus.tips.TipManager
 import org.mozilla.focus.topsites.DefaultTopSitesStorage.Companion.TOP_SITES_MAX_LIMIT
 import org.mozilla.focus.topsites.DefaultTopSitesView
 import org.mozilla.focus.topsites.TopSitesOverlay
-import org.mozilla.focus.topsites.DefaultTopSitesStorage.Companion.TOP_SITES_MAX_LIMIT
 import org.mozilla.focus.ui.theme.FocusTheme
 import org.mozilla.focus.utils.AppConstants
 import org.mozilla.focus.utils.Features
