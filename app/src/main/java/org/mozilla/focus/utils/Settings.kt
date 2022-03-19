@@ -178,11 +178,11 @@ class Settings(
                 .commit()
         }
 
-    var shouldShowCfrForShieldToolbarIcon: Boolean
-        get() = preferences.getBoolean(getPreferenceKey(R.string.pref_cfr_visibility_for_shield_toolbar_icon), true)
+    var shouldShowCfrForTrackingProtection: Boolean
+        get() = preferences.getBoolean(getPreferenceKey(R.string.pref_cfr_visibility_for_tracking_protection), true)
         set(value) {
             preferences.edit()
-                .putBoolean(getPreferenceKey(R.string.pref_cfr_visibility_for_shield_toolbar_icon), value)
+                .putBoolean(getPreferenceKey(R.string.pref_cfr_visibility_for_tracking_protection), value)
                 .apply()
         }
 
@@ -388,7 +388,7 @@ class Settings(
         }
 
     var shouldUseNimbusPreview: Boolean
-        get() = preferences.getBoolean(getPreferenceKey(R.string.pref_key_use_nimbus_preview), true)
+        get() = preferences.getBoolean(getPreferenceKey(R.string.pref_key_use_nimbus_preview), false)
         set(value) {
             preferences.edit()
                 .putBoolean(getPreferenceKey(R.string.pref_key_use_nimbus_preview), value)

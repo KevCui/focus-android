@@ -4,68 +4,73 @@
 package org.mozilla.focus.activity
 
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mozilla.focus.activity.robots.browserScreen
 import org.mozilla.focus.activity.robots.searchScreen
 import org.mozilla.focus.helpers.FeatureSettingsHelper
 import org.mozilla.focus.helpers.MainActivityFirstrunTestRule
-import org.mozilla.focus.helpers.TestHelper.mDevice
-import org.mozilla.focus.helpers.TestHelper.readTestAsset
-import org.mozilla.focus.helpers.TestHelper.waitingTime
+import org.mozilla.focus.helpers.RetryTestRule
+import org.mozilla.focus.helpers.TestHelper
 import org.mozilla.focus.testAnnotations.SmokeTest
-import java.io.IOException
 
-// This test opens and verifies the share overlay
+// These tests check the interaction with various context menu options
 @RunWith(AndroidJUnit4ClassRunner::class)
-class ShareWebsiteTest {
+class ContextMenusTest {
     private lateinit var webServer: MockWebServer
+
     private val featureSettingsHelper = FeatureSettingsHelper()
 
     @get: Rule
     var mActivityTestRule = MainActivityFirstrunTestRule(showFirstRun = false)
 
+    @Rule
+    @JvmField
+    val retryTestRule = RetryTestRule(3)
+
     @Before
-    fun setUp() {
-        featureSettingsHelper.setShieldIconCFREnabled(false)
+    fun setup() {
+        featureSettingsHelper.setCfrForTrackingProtectionEnabled(false)
         featureSettingsHelper.setNumberOfTabsOpened(4)
         webServer = MockWebServer()
-        try {
-            webServer.enqueue(
-                MockResponse()
-                    .setBody(readTestAsset("plain_test.html"))
-            )
-            webServer.start()
-        } catch (e: IOException) {
-            throw AssertionError("Could not start web server", e)
-        }
+        webServer.enqueue(TestHelper.createMockResponseFromAsset("tab1.html"))
+        webServer.enqueue(TestHelper.createMockResponseFromAsset("tab2.html"))
     }
 
     @After
     fun tearDown() {
-        try {
-            webServer.shutdown()
-        } catch (e: IOException) {
-            throw AssertionError("Could not stop web server", e)
-        }
+        webServer.shutdown()
         featureSettingsHelper.resetAllFeatureFlags()
     }
 
     @SmokeTest
     @Test
-    fun shareTabTest() {
-        /* Go to a webpage */
+    fun copyLinkAddressTest() {
+        val tab1Url = webServer.url("tab1.html").toString()
+        val tab2Url = webServer.url("tab2.html").toString()
+
         searchScreen {
-        }.loadPage(webServer.url("").toString()) {
-            progressBar.waitUntilGone(waitingTime)
-        }.openMainMenu {
-        }.openShareScreen {
-            verifyShareAppsListOpened()
-            mDevice.pressBack()
+        }.loadPage(tab1Url) {
+            verifyPageContent("Tab 1")
+            longPressLink("Tab 2")
+            verifyLinkContextMenu(tab2Url)
+            clickContextMenuCopyLink()
+        }
+
+        searchScreen {
+            clickToolbar()
+            clearSearchBar()
+            longPressSearchBar()
+            pasteAndLoadLink()
+        }
+
+        browserScreen {
+            progressBar.waitUntilGone(TestHelper.waitingTime)
+            verifyPageURL(tab2Url)
         }
     }
 }

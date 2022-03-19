@@ -28,7 +28,7 @@ class SearchTest {
 
     @Before
     fun setUp() {
-        featureSettingsHelper.setShieldIconCFREnabled(false)
+        featureSettingsHelper.setCfrForTrackingProtectionEnabled(false)
         featureSettingsHelper.setNumberOfTabsOpened(4)
     }
 
@@ -79,7 +79,7 @@ class SearchTest {
         }.openMainMenu {
         }.openSettings {
         }.openSearchSettingsMenu {
-            verifySearchSuggestionsEnabled(true)
+            verifySearchSuggestionsSwitchState(true)
         }
     }
 
@@ -98,7 +98,7 @@ class SearchTest {
         }.openMainMenu {
         }.openSettings {
         }.openSearchSettingsMenu {
-            verifySearchSuggestionsEnabled(false)
+            verifySearchSuggestionsSwitchState(false)
         }
     }
 

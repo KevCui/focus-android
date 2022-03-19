@@ -13,7 +13,9 @@ import org.mozilla.focus.activity.robots.searchScreen
 import org.mozilla.focus.helpers.FeatureSettingsHelper
 import org.mozilla.focus.helpers.MainActivityFirstrunTestRule
 import org.mozilla.focus.helpers.RetryTestRule
-import org.mozilla.focus.helpers.TestHelper
+import org.mozilla.focus.helpers.TestHelper.createMockResponseFromAsset
+import org.mozilla.focus.helpers.TestHelper.mDevice
+import org.mozilla.focus.helpers.TestHelper.waitingTime
 import org.mozilla.focus.testAnnotations.SmokeTest
 
 /**
@@ -33,9 +35,11 @@ class ThreeDotMainMenuTest {
     @Before
     fun startWebServer() {
         webServer = MockWebServer()
-        webServer.enqueue(TestHelper.createMockResponseFromAsset("tab1.html"))
+        webServer.enqueue(createMockResponseFromAsset("tab1.html"))
+        webServer.enqueue(createMockResponseFromAsset("tab1.html"))
+        webServer.enqueue(createMockResponseFromAsset("tab1.html"))
         webServer.start()
-        featureSettingsHelper.setShieldIconCFREnabled(false)
+        featureSettingsHelper.setCfrForTrackingProtectionEnabled(false)
         featureSettingsHelper.setNumberOfTabsOpened(4)
     }
 
@@ -71,6 +75,64 @@ class ThreeDotMainMenuTest {
             verifyRequestDesktopSiteExists()
             verifySettingsButtonExists()
             verifyReportSiteIssueButtonExists()
+        }
+    }
+
+    @SmokeTest
+    @Test
+    fun shareTabTest() {
+        val pageUrl = webServer.url("").toString()
+
+        searchScreen {
+        }.loadPage(pageUrl) {
+            progressBar.waitUntilGone(waitingTime)
+        }.openMainMenu {
+        }.openShareScreen {
+            verifyShareAppsListOpened()
+            mDevice.pressBack()
+        }
+    }
+
+    @SmokeTest
+    @Test
+    fun findInPageTest() {
+        val pageUrl = webServer.url("").toString()
+
+        searchScreen {
+        }.loadPage(pageUrl) {
+            progressBar.waitUntilGone(waitingTime)
+        }.openMainMenu {
+        }.openFindInPage {
+            enterFindInPageQuery("tab")
+            verifyFindNextInPageResult("1/3")
+            verifyFindNextInPageResult("2/3")
+            verifyFindNextInPageResult("3/3")
+            verifyFindPrevInPageResult("1/3")
+            verifyFindPrevInPageResult("3/3")
+            verifyFindPrevInPageResult("2/3")
+            closeFindInPage()
+        }
+    }
+
+    @SmokeTest
+    @Test
+    fun switchDesktopModeTest() {
+        val pageUrl = webServer.url("").toString()
+
+        searchScreen {
+        }.loadPage(pageUrl) {
+            progressBar.waitUntilGone(waitingTime)
+            verifyPageContent("mobile-site")
+        }.openMainMenu {
+        }.switchDesktopSiteMode {
+            progressBar.waitUntilGone(waitingTime)
+            verifyPageContent("desktop-site")
+        }.openMainMenu {
+            verifyRequestDesktopSiteIsEnabled(true)
+        }.switchDesktopSiteMode {
+            verifyPageContent("mobile-site")
+        }.openMainMenu {
+            verifyRequestDesktopSiteIsEnabled(false)
         }
     }
 }

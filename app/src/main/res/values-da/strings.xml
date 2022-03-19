@@ -492,7 +492,37 @@
 
 
 
-  <!-- First run tour (Default browser): Title -->
+  <!-- Onboarding: Title -->
+    <!-- %1$s will be replaced by the app name and build variant(e.g. Firefox Focus, Firefox Klar Nightly) -->
+    <string name="onboarding_title">Velkommen til %1$s!</string>
+
+    <!-- Onboarding: Description -->
+    <string name="onboarding_description">Privat browsing på næste niveau, når du ønsker det</string>
+
+    <!-- Onboarding: Incognito Title -->
+    <string name="onboarding_incognito_title">Når inkognito møder usynlig</string>
+
+    <!-- Onboarding: Incognito Description -->
+    <!-- Text %s will be replaced with the name of the app (e.g. Focus, Klar) -->
+    <string name="onboarding_incognito_description">%s er en browser med indbygget beskyttelse af dit privatliv og med ekstra stærk beskyttelse mod sporing og cookies.</string>
+
+    <!-- Onboarding: History Title -->
+    <string name="onboarding_history_title">Browse som om det aldrig skete</string>
+
+    <!-- Onboarding: History Description -->
+    <string moz:removedIn="100" name="onboarding_history_description" tools:ignore="UnusedResources">Ét tryk sletter din browsinghistorik og dine cookies - og forhindrer reklamer i at følge efter dig.</string>
+    <string name="onboarding_history_description2">Ét tryk sletter din browsinghistorik og dine cookies - og forhindrer reklamer i at følge efter dig.</string>
+
+    <!-- Onboarding: Protection Title -->
+    <string name="onboarding_protection_title">Beskyttelse af privatlivet til enhver situation</string>
+
+    <!-- Onboarding: Protection Description -->
+    <string name="onboarding_protection_description">Hvis dine behov for beskyttelse af dit privatliv ændrer sig, så er det nemt at ændre indstillingerne.</string>
+
+    <!-- Onboarding: Start browsing -->
+    <string name="onboarding_start_browsing">Afslut rundvisningen</string>
+
+    <!-- First run tour (Default browser): Title -->
     <string name="firstrun_defaultbrowser_title">Styrk dit privatliv</string>
     <!-- First run tour (Default browser): Text. -->
     <string name="firstrun_defaultbrowser_text2">Tag privat browsing til næste niveau. Bloker reklamer og andet indhold, der kan spore din færden på nettet og gøre det langsommere at hente sider.</string>
@@ -505,7 +535,7 @@
     <!-- First run tour (Shortcut): Title -->
     <string name="firstrun_shortcut_title">Tilføj genveje til din startskærm</string>
     <!-- First run tour (Shortcut): Text. %1$s will be replaced with the name of the app (e.g. Firefox Focus) -->
-    <string name="firstrun_shortcut_text">Gå hurtigt tilbage til dine yndlingssider i %1$s. Vælg blot \&quot;Føj til startskærm\&quot; fra menuen i %1$s.</string>
+    <string name="firstrun_shortcut_text">Gå hurtigt tilbage til dine yndlingssider i %1$s. Vælg blot \&quot;Føj til startskærmen\&quot; fra menuen i %1$s.</string>
 
     <!-- First run tour (Privacy): Title -->
     <string name="firstrun_privacy_title">Gør beskyttelse af dit privatliv til en vane</string>
@@ -900,4 +930,22 @@ The new line here must be kept as the second half of the string is clickable for
     <!-- Sessions List -->
     <!-- Content description (not visible, for screen readers etc.): Button that closes a tab n the sessions list -->
     <string name="close_tab">Luk faneblad</string>
+
+    <!-- Contextual Feature Recommendation Popups -->
+    <!-- CFR for Toolbar Shield Icon (Banner Info Message) -->
+    <string name="cfr_for_toolbar_shield_icon">Det ser ud til, at dette websted forsøgte at spore dig. Klik på skjoldet for webstedsindstillinger og statistik for blokerede sporings-mekanismer.</string>
+    <!-- Content description (not visible, for screen readers etc.): Button that closes the CFR popup -->
+    <string name="cfr_close_button_description">Luk pop op</string>
+
+    <!-- Tool Tip for: Privacy and Security Settings Screen  task : https://github.com/mozilla-mobile/focus-android/issues/6211 -->
+    <!-- Tool Tip Title -->
+    <string name="tool_tip_title">Du er beskyttet!</string>
+    <!-- Tool Tip Message -->
+    <string name="tool_tip_message">Disse standard-indstillinger giver stærk beskyttelse. Men det er nemt at tilpasse indstillingerne, så de opfylder dine specifikke behov.</string>
+    <!-- Tool Tip "X" button Content description (not visible, for screen readers etc.) :Button that closes the tool tip -->
+    <string name="tool_tip_dismiss_button_content_description">Afvis</string>
+
+    <!-- CFR for Toolbar Delete Icon (Banner Info Message) -->
+    <string name="cfr_for_toolbar_delete_icon">Slet dine personlige data, browserhistorik og mere fra denne session ved at trykke på papirkurven. Prøv det!</string>
+
 </resources>

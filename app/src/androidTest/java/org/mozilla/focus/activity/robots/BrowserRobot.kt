@@ -8,24 +8,27 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.ViewInteraction
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withParentIndex
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
-import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.not
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.mozilla.focus.R
 import org.mozilla.focus.helpers.TestHelper.mDevice
 import org.mozilla.focus.helpers.TestHelper.packageName
+import org.mozilla.focus.helpers.TestHelper.progressBar
 import org.mozilla.focus.helpers.TestHelper.waitingTime
+import org.mozilla.focus.helpers.TestHelper.waitingTimeShort
 import org.mozilla.focus.idlingResources.SessionLoadedIdlingResource
+import java.time.LocalDate
 
 class BrowserRobot {
 
@@ -98,26 +101,12 @@ class BrowserRobot {
         tabsCounter.check(matches(withContentDescription("$tabsCount open tabs. Tap to switch tabs.")))
     }
 
-    fun verifyTabsOrder(vararg tabTitle: String) {
-        for (tab in tabTitle.indices) {
-            onView(withId(R.id.sessions)).check(
-                matches(
-                    hasDescendant(
-                        allOf(
-                            hasDescendant(
-                                withText(tabTitle[tab])
-                            ),
-                            withParentIndex(tab)
-                        )
-                    )
-                )
-            )
-        }
+    fun verifyTabsCounterNotShown() {
+        assertFalse(
+            mDevice.findObject(UiSelector().resourceId("$packageName:id/counter_root"))
+                .waitForExists(waitingTimeShort)
+        )
     }
-
-    fun openTabsTray(): ViewInteraction = tabsCounter.perform(click())
-
-    fun selectTab(tabTitle: String): ViewInteraction = onView(withText(tabTitle)).perform(click())
 
     fun verifyShareAppsListOpened() =
         assertTrue(shareAppsList.waitForExists(waitingTime))
@@ -161,6 +150,203 @@ class BrowserRobot {
         shareLink.check(matches(isDisplayed()))
     }
 
+    fun clickContextMenuCopyLink() = copyLink.perform(click())
+
+    fun clickLinkMatchingText(expectedText: String) {
+        mDevice.findObject(UiSelector().textContains(expectedText)).waitForExists(waitingTime)
+        mDevice.findObject(UiSelector().textContains(expectedText)).also { it.click() }
+    }
+
+    fun verifyOpenLinksInAppsPrompt(openLinksInAppsEnabled: Boolean, link: String) = assertOpenLinksInAppsPrompt(openLinksInAppsEnabled, link)
+
+    fun clickOpenLinksInAppsCancelButton() = openLinksInAppsCancelButton.click()
+
+    fun clickDropDownForm() {
+        mDevice.findObject(UiSelector().resourceId("$packageName:id/engineView"))
+            .waitForExists(waitingTime)
+        mDevice.findObject(UiSelector().textContains("Drop-down Form")).waitForExists(waitingTime)
+        dropDownForm.click()
+    }
+
+    fun clickCalendarForm() {
+        mDevice.findObject(UiSelector().resourceId("$packageName:id/engineView"))
+            .waitForExists(waitingTime)
+        mDevice.findObject(UiSelector().textContains("Calendar Form")).waitForExists(waitingTime)
+        calendarForm.click()
+        mDevice.waitForIdle(waitingTime)
+    }
+
+    fun selectDate() {
+        mDevice.findObject(UiSelector().resourceId("android:id/month_view")).waitForExists(waitingTime)
+
+        val monthViewerCurrentDay =
+            mDevice.findObject(
+                UiSelector()
+                    .textContains("$currentDay")
+                    .descriptionContains("$currentDay $currentMonth $currentYear")
+            )
+
+        monthViewerCurrentDay.click()
+    }
+
+    fun clickFormViewButton(button: String) {
+        val clockAndCalendarButton = mDevice.findObject(UiSelector().textContains(button))
+        clockAndCalendarButton.click()
+    }
+
+    fun clickSubmitDateButton() {
+        submitDateButton.waitForExists(waitingTime)
+        submitDateButton.click()
+    }
+
+    fun verifySelectedDate() {
+        mDevice.findObject(
+            UiSelector()
+                .textContains("Submit date")
+                .resourceId("submitDate")
+        ).waitForExists(waitingTime)
+
+        assertTrue(
+            mDevice.findObject(
+                UiSelector()
+                    .text("Selected date is: $currentDate")
+            ).waitForExists(waitingTime)
+        )
+    }
+
+    fun clickAndWriteTextInInputBox(text: String) {
+        mDevice.findObject(UiSelector().resourceId("$packageName:id/engineView"))
+            .waitForExists(waitingTime)
+        mDevice.findObject(UiSelector().textContains("Input Text")).waitForExists(waitingTime)
+        textInputBox.click()
+        textInputBox.setText(text)
+    }
+
+    fun longPressTextInputBox() {
+        textInputBox.waitForExists(waitingTime)
+        textInputBox.longClick()
+    }
+
+    fun longClickText(expectedText: String) {
+        var currentTries = 0
+        while (currentTries++ < 3) {
+            try {
+                mDevice.findObject(UiSelector().textContains(expectedText))
+                    .waitForExists(waitingTime)
+                mDevice.findObject(By.textContains(expectedText)).also { it.longClick() }
+                break
+            } catch (e: NullPointerException) {
+                browserScreen {
+                }.openMainMenu {
+                }.clickReloadButton {}
+            }
+        }
+    }
+
+    fun longClickAndCopyText(expectedText: String) {
+        var currentTries = 0
+        while (currentTries++ < 3) {
+            try {
+                mDevice.findObject(UiSelector().textContains(expectedText)).waitForExists(waitingTime)
+                mDevice.findObject(By.textContains(expectedText)).also { it.longClick() }
+
+                mDevice.findObject(UiSelector().textContains("Copy")).waitForExists(waitingTime)
+                mDevice.findObject(By.textContains("Copy")).also { it.click() }
+                break
+            } catch (e: NullPointerException) {
+                browserScreen {
+                }.openMainMenu {
+                }.clickReloadButton {}
+            }
+        }
+    }
+
+    fun verifyCopyOptionDoesNotExist() =
+        assertFalse(mDevice.findObject(UiSelector().textContains("Copy")).waitForExists(waitingTime))
+
+    fun clickAndPasteTextInInputBox() {
+        var currentTries = 0
+        while (currentTries++ < 3) {
+            try {
+                mDevice.findObject(UiSelector().textContains("Paste")).waitForExists(waitingTime)
+                mDevice.findObject(By.textContains("Paste")).also { it.click() }
+                break
+            } catch (e: NullPointerException) {
+                longPressTextInputBox()
+            }
+        }
+    }
+
+    fun clickSubmitTextInputButton() {
+        submitTextInputButton.waitForExists(waitingTime)
+        submitTextInputButton.click()
+    }
+
+    fun selectDropDownOption(optionName: String) {
+        mDevice.findObject(
+            UiSelector().resourceId("$packageName:id/customPanel")
+        ).waitForExists(waitingTime)
+        mDevice.findObject(UiSelector().textContains(optionName)).also { it.click() }
+    }
+
+    fun clickSubmitDropDownButton() {
+        submitDropDownButton.waitForExists(waitingTime)
+        submitDropDownButton.click()
+    }
+
+    fun verifySelectedDropDownOption(optionName: String) {
+        mDevice.findObject(
+            UiSelector()
+                .textContains("Submit drop down option")
+                .resourceId("submitOption")
+        ).waitForExists(waitingTime)
+
+        assertTrue(
+            mDevice.findObject(
+                UiSelector()
+                    .text("Selected option is: $optionName")
+            ).waitForExists(waitingTime)
+        )
+    }
+
+    fun enterFindInPageQuery(expectedText: String) {
+        mDevice.wait(Until.findObject(By.res("org.mozilla.fenix.debug:id/find_in_page_query_text")), waitingTime)
+        findInPageQuery.perform(ViewActions.clearText())
+        mDevice.wait(Until.gone(By.res("org.mozilla.fenix.debug:id/find_in_page_result_text")), waitingTime)
+        findInPageQuery.perform(ViewActions.typeText(expectedText))
+        mDevice.wait(Until.findObject(By.res("org.mozilla.fenix.debug:id/find_in_page_result_text")), waitingTime)
+    }
+
+    fun verifyFindNextInPageResult(ratioCounter: String) {
+        mDevice.wait(Until.findObject(By.text(ratioCounter)), waitingTime)
+        val resultsCounter = mDevice.findObject(By.text(ratioCounter))
+        findInPageResult.check(matches(withText((ratioCounter))))
+        findInPageNextButton.perform(click())
+        resultsCounter.wait(Until.textNotEquals(ratioCounter), waitingTime)
+    }
+
+    fun verifyFindPrevInPageResult(ratioCounter: String) {
+        mDevice.wait(Until.findObject(By.text(ratioCounter)), waitingTime)
+        val resultsCounter = mDevice.findObject(By.text(ratioCounter))
+        findInPageResult.check(matches(withText((ratioCounter))))
+        findInPagePrevButton.perform(click())
+        resultsCounter.wait(Until.textNotEquals(ratioCounter), waitingTime)
+    }
+
+    fun closeFindInPage() {
+        findInPageCloseButton.perform(click())
+        findInPageQuery.check(matches(not(isDisplayed())))
+    }
+
+    fun verifyCookiesEnabled(areCookiesEnabled: String) {
+        mDevice.findObject(UiSelector().resourceId("detected_value")).waitForExists(waitingTime)
+        assertTrue(
+            mDevice.findObject(
+                UiSelector().textContains(areCookiesEnabled)
+            ).waitForExists(waitingTime)
+        )
+    }
+
     class Transition {
         fun openSearchBar(interact: SearchRobot.() -> Unit): SearchRobot.Transition {
             browserURLbar.waitForExists(waitingTime)
@@ -189,15 +375,6 @@ class BrowserRobot {
             return ThreeDotMainMenuRobot.Transition()
         }
 
-        fun openThreeDotMenu(interact: ThreeDotMainMenuRobot.() -> Unit): ThreeDotMainMenuRobot.Transition {
-            mainMenu
-                .check(matches(isDisplayed()))
-                .perform(click())
-
-            ThreeDotMainMenuRobot().interact()
-            return ThreeDotMainMenuRobot.Transition()
-        }
-
         fun openSiteSettingsMenu(interact: HomeScreenRobot.() -> Unit): HomeScreenRobot.Transition {
             securityIcon.click()
 
@@ -215,6 +392,21 @@ class BrowserRobot {
             SiteSecurityInfoSheetRobot().interact()
             return SiteSecurityInfoSheetRobot.Transition()
         }
+
+        fun openTabsTray(interact: TabsTrayRobot.() -> Unit): TabsTrayRobot.Transition {
+            tabsCounter.perform(click())
+
+            TabsTrayRobot().interact()
+            return TabsTrayRobot.Transition()
+        }
+
+        fun goToPreviousPage(interact: BrowserRobot.() -> Unit): BrowserRobot.Transition {
+            mDevice.pressBack()
+            progressBar.waitUntilGone(waitingTime)
+
+            BrowserRobot().interact()
+            return BrowserRobot.Transition()
+        }
     }
 }
 
@@ -231,6 +423,24 @@ inline fun runWithIdleRes(ir: IdlingResource?, pendingCheck: () -> Unit) {
         IdlingRegistry.getInstance().unregister(ir)
     }
 }
+
+private fun assertOpenLinksInAppsPrompt(openLinksInAppsEnabled: Boolean, link: String) {
+    if (openLinksInAppsEnabled) {
+        mDevice.findObject(UiSelector().resourceId("$packageName:id/parentPanel")).waitForExists(waitingTime)
+        assertTrue(openLinksInAppsMessage.waitForExists(waitingTimeShort))
+        assertTrue(openLinksInAppsLink(link).exists())
+        assertTrue(openLinksInAppsCancelButton.waitForExists(waitingTimeShort))
+        assertTrue(openLinksInAppsOpenButton.waitForExists(waitingTimeShort))
+    } else {
+        assertFalse(
+            mDevice.findObject(
+                UiSelector().resourceId("$packageName:id/parentPanel")
+            ).waitForExists(waitingTimeShort)
+        )
+    }
+}
+
+private fun openLinksInAppsLink(link: String) = mDevice.findObject(UiSelector().textContains(link))
 
 private val browserURLbar = mDevice.findObject(
     UiSelector().resourceId("$packageName:id/mozac_browser_toolbar_url_view")
@@ -263,3 +473,69 @@ private val openLinkInPrivateTab = onView(withText("Open link in private tab"))
 private val copyLink = onView(withText("Copy link"))
 
 private val shareLink = onView(withText("Share link"))
+
+// Find in page toolbar
+private val findInPageQuery = onView(withId(R.id.find_in_page_query_text))
+
+private val findInPageResult = onView(withId(R.id.find_in_page_result_text))
+
+private val findInPageNextButton = onView(withId(R.id.find_in_page_next_btn))
+
+private val findInPagePrevButton = onView(withId(R.id.find_in_page_prev_btn))
+
+private val findInPageCloseButton = onView(withId(R.id.find_in_page_close_btn))
+
+private val openLinksInAppsMessage = mDevice.findObject(UiSelector().resourceId("$packageName:id/alertTitle"))
+
+private val openLinksInAppsCancelButton = mDevice.findObject(UiSelector().textContains("CANCEL"))
+
+private val openLinksInAppsOpenButton = mDevice.findObject(UiSelector().textContains("OPEN"))
+
+private val currentDate = LocalDate.now()
+private val currentDay = currentDate.dayOfMonth
+private val currentMonth = currentDate.month
+private val currentYear = currentDate.year
+
+private val dropDownForm =
+    mDevice.findObject(
+        UiSelector()
+            .resourceId("dropDown")
+            .className("android.widget.Spinner")
+            .packageName("$packageName")
+    )
+
+private val submitDropDownButton =
+    mDevice.findObject(
+        UiSelector()
+            .textContains("Submit drop down option")
+            .resourceId("submitOption")
+    )
+
+private val textInputBox =
+    mDevice.findObject(
+        UiSelector()
+            .resourceId("textInput")
+            .packageName("$packageName")
+    )
+
+private val submitTextInputButton =
+    mDevice.findObject(
+        UiSelector()
+            .textContains("Submit input")
+            .resourceId("submitInput")
+    )
+
+private val calendarForm =
+    mDevice.findObject(
+        UiSelector()
+            .resourceId("calendar")
+            .className("android.widget.Spinner")
+            .packageName("$packageName")
+    )
+
+val submitDateButton =
+    mDevice.findObject(
+        UiSelector()
+            .textContains("Submit date")
+            .resourceId("submitDate")
+    )

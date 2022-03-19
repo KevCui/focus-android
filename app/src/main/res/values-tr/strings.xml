@@ -491,7 +491,38 @@
 
 
 
-  <!-- First run tour (Default browser): Title -->
+  <!-- Onboarding: Title -->
+    <!-- %1$s will be replaced by the app name and build variant(e.g. Firefox Focus, Firefox Klar Nightly) -->
+    <string name="onboarding_title">%1$s’a hoş geldiniz!</string>
+
+    <!-- Onboarding: Description -->
+    <string name="onboarding_description">İstediğiniz an gizli gezinti</string>
+
+    <!-- Onboarding: Incognito Title -->
+    <string name="onboarding_incognito_title">Gizli gezinti görünmezlikle buluşuyor</string>
+
+    <!-- Onboarding: Incognito Description -->
+    <!-- Text %s will be replaced with the name of the app (e.g. Focus, Klar) -->
+    <string name="onboarding_incognito_description">%s, son derece güçlü izlenme ve çerez korumasına sahip, gizliliğe öncelik veren bir tarayıcıdır.</string>
+
+    <!-- Onboarding: History Title -->
+    <string name="onboarding_history_title">Hiç yaşanmamış gibi gezin</string>
+
+    <!-- Onboarding: History Description -->
+    <string moz:removedIn="100" name="onboarding_history_description" tools:ignore="UnusedResources">Tek dokunuşla gezinti geçmişinizi ve çerezlerinizi silebilirsiniz. Üstelik reklamlar sizi izleyemez.</string>
+
+    <string name="onboarding_history_description2">Tek dokunuşla gezinti geçmişinizi ve çerezlerinizi silebilirsiniz. Üstelik reklamlar sizi izleyemez.</string>
+
+    <!-- Onboarding: Protection Title -->
+    <string name="onboarding_protection_title">Her duruma uygun gizlilik</string>
+
+    <!-- Onboarding: Protection Description -->
+    <string name="onboarding_protection_description">Gezinme ihtiyaçlarınız değişirse gizlilik ayarlarınızı kolayca artırıp azaltabilirsiniz.</string>
+
+    <!-- Onboarding: Start browsing -->
+    <string name="onboarding_start_browsing">Gezinmeye başlayın</string>
+
+    <!-- First run tour (Default browser): Title -->
     <string name="firstrun_defaultbrowser_title">Gizliliğini güçlendir</string>
     <!-- First run tour (Default browser): Text. -->
     <string name="firstrun_defaultbrowser_text2">Gizli gezintiyi daha da geliştirdik. Gezdiğiniz siteleri takip eden ve sayfaların yüklenmesini yavaşlatan reklamları ve diğer içerikleri engelleyebilirsiniz.</string>
@@ -899,4 +930,22 @@ The new line here must be kept as the second half of the string is clickable for
     <!-- Sessions List -->
     <!-- Content description (not visible, for screen readers etc.): Button that closes a tab n the sessions list -->
     <string name="close_tab">Sekmeyi kapat</string>
+
+    <!-- Contextual Feature Recommendation Popups -->
+    <!-- CFR for Toolbar Shield Icon (Banner Info Message) -->
+    <string name="cfr_for_toolbar_shield_icon">Bu site sizi takip etmeye çalışıyordu. Site ayarlarını ve engelleme istatistiklerini görmek için kalkana dokunun.</string>
+    <!-- Content description (not visible, for screen readers etc.): Button that closes the CFR popup -->
+    <string name="cfr_close_button_description">Açılır pencereyi kapat</string>
+
+    <!-- Tool Tip for: Privacy and Security Settings Screen  task : https://github.com/mozilla-mobile/focus-android/issues/6211 -->
+    <!-- Tool Tip Title -->
+    <string name="tool_tip_title">Koruma altındasınız!</string>
+    <!-- Tool Tip Message -->
+    <string name="tool_tip_message">Bu varsayılan ayarlar güçlü koruma sağlar ama isterseniz ayarları ihtiyaçlarınızı göre değiştirebilirsiniz.</string>
+    <!-- Tool Tip "X" button Content description (not visible, for screen readers etc.) :Button that closes the tool tip -->
+    <string name="tool_tip_dismiss_button_content_description">Kapat</string>
+
+    <!-- CFR for Toolbar Delete Icon (Banner Info Message) -->
+    <string name="cfr_for_toolbar_delete_icon">Çöp kutusuna dokunarak bu oturumdaki kişisel verilerinizi, gezinti geçmişinizi ve diğer verilerinizi silebilirsiniz. Deneyin!</string>
+
 </resources>

@@ -491,7 +491,38 @@
 
 
 
-  <!-- First run tour (Default browser): Title -->
+  <!-- Onboarding: Title -->
+    <!-- %1$s will be replaced by the app name and build variant(e.g. Firefox Focus, Firefox Klar Nightly) -->
+    <string name="onboarding_title">欢迎使用 %1$s！</string>
+
+    <!-- Onboarding: Description -->
+    <string name="onboarding_description">符合您需求的下一代隐私浏览体验</string>
+
+    <!-- Onboarding: Incognito Title -->
+    <string name="onboarding_incognito_title">无痕模式遇上隐形模式</string>
+
+    <!-- Onboarding: Incognito Description -->
+    <!-- Text %s will be replaced with the name of the app (e.g. Focus, Klar) -->
+    <string name="onboarding_incognito_description">%s 是一款隐私优先的浏览器，内置超强的跟踪和 Cookie 保护功能。</string>
+
+    <!-- Onboarding: History Title -->
+    <string name="onboarding_history_title">浏览无痕迹</string>
+
+    <!-- Onboarding: History Description -->
+    <string moz:removedIn="100" name="onboarding_history_description" tools:ignore="UnusedResources">点一下即可清除浏览历史和 Cookie，防止被广告跟踪。</string>
+
+    <string name="onboarding_history_description2">点一下即可清除浏览历史和 Cookie，防止被广告跟踪。</string>
+
+    <!-- Onboarding: Protection Title -->
+    <string name="onboarding_protection_title">适合任何场景的隐私保护机制</string>
+
+    <!-- Onboarding: Protection Description -->
+    <string name="onboarding_protection_description">若您的浏览需求有变，也可很容易地收紧或放松隐私设置。</string>
+
+    <!-- Onboarding: Start browsing -->
+    <string name="onboarding_start_browsing">开始浏览</string>
+
+    <!-- First run tour (Default browser): Title -->
     <string name="firstrun_defaultbrowser_title">强化您的隐私</string>
     <!-- First run tour (Default browser): Text. -->
     <string name="firstrun_defaultbrowser_text2">隐私浏览模式变得更强大了。能拦截广告，还能拦截在不同网站跟踪您，又拖慢网页载入的内容。</string>
@@ -906,4 +937,22 @@ The new line here must be kept as the second half of the string is clickable for
     <!-- Sessions List -->
     <!-- Content description (not visible, for screen readers etc.): Button that closes a tab n the sessions list -->
     <string name="close_tab">关闭标签页</string>
+
+    <!-- Contextual Feature Recommendation Popups -->
+    <!-- CFR for Toolbar Shield Icon (Banner Info Message) -->
+    <string name="cfr_for_toolbar_shield_icon">看起来这个网站正在试图跟踪您，点击盾牌即可查看网站设置和跟踪器拦截状态。</string>
+    <!-- Content description (not visible, for screen readers etc.): Button that closes the CFR popup -->
+    <string name="cfr_close_button_description">关闭弹窗</string>
+
+    <!-- Tool Tip for: Privacy and Security Settings Screen  task : https://github.com/mozilla-mobile/focus-android/issues/6211 -->
+    <!-- Tool Tip Title -->
+    <string name="tool_tip_title">保护您是我的首要职责</string>
+    <!-- Tool Tip Message -->
+    <string name="tool_tip_message">默认设置已提供足够强大的保护。如您有特殊需求，也可方便地调整这些设置。</string>
+    <!-- Tool Tip "X" button Content description (not visible, for screen readers etc.) :Button that closes the tool tip -->
+    <string name="tool_tip_dismiss_button_content_description">知道了</string>
+
+    <!-- CFR for Toolbar Delete Icon (Banner Info Message) -->
+    <string name="cfr_for_toolbar_delete_icon">点击垃圾桶图标，即可删除该会话中的个人数据、浏览历史等。试试吧！</string>
+
 </resources>
