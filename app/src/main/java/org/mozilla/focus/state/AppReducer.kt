@@ -29,13 +29,15 @@ object AppReducer : Reducer<AppState, AppAction> {
             is AppAction.NavigateUp -> navigateUp(state, action)
             is AppAction.OpenTab -> openTab(state, action)
             is AppAction.TopSitesChange -> topSitesChanged(state, action)
-            is AppAction.AutoplayChange -> autoplayRulesChanged(state, action)
+            is AppAction.SitePermissionOptionChange -> sitePermissionOptionChanged(state, action)
             is AppAction.SecretSettingsStateChange -> secretSettingsStateChanged(
                 state,
                 action
             )
             is AppAction.ShowEraseTabsCfrChange -> showEraseTabsCfrChanged(state, action)
             is AppAction.ShowTrackingProtectionCfrChange -> showTrackingProtectionCfrChanged(state, action)
+            is AppAction.OpenSitePermissionOptionsScreen -> openSitePermissionOptionsScreen(state, action)
+            is AppAction.ShowHomeScreen -> showHomeScreen(state)
         }
     }
 }
@@ -57,10 +59,9 @@ private fun selectionChanged(state: AppState, action: AppAction.SelectionChanged
  * All tabs have been closed.
  */
 private fun noTabs(state: AppState): AppState {
-    if (state.screen is Screen.Home || state.screen is Screen.FirstRun) {
+    if (state.screen is Screen.Home || state.screen is Screen.FirstRun || state.screen is Screen.Locked) {
         return state
     }
-
     return state.copy(screen = Screen.Home)
 }
 
@@ -112,6 +113,12 @@ private fun showFirstRun(state: AppState): AppState {
 }
 
 /**
+ * Force showing the home screen.
+ */
+private fun showHomeScreen(state: AppState): AppState {
+    return state.copy(screen = Screen.Home)
+}
+/**
  * Lock the application.
  */
 private fun lock(state: AppState): AppState {
@@ -155,8 +162,8 @@ private fun topSitesChanged(state: AppState, action: AppAction.TopSitesChange): 
 /**
  * The rules of site permissions autoplay has changed.
  */
-private fun autoplayRulesChanged(state: AppState, action: AppAction.AutoplayChange): AppState {
-    return state.copy(autoplayRulesChanged = action.value)
+private fun sitePermissionOptionChanged(state: AppState, action: AppAction.SitePermissionOptionChange): AppState {
+    return state.copy(sitePermissionOptionChange = action.value)
 }
 
 /**
@@ -183,7 +190,14 @@ private fun showTrackingProtectionCfrChanged(
     return state.copy(showTrackingProtectionCfr = action.value)
 }
 
-@Suppress("ComplexMethod")
+private fun openSitePermissionOptionsScreen(
+    state: AppState,
+    action: AppAction.OpenSitePermissionOptionsScreen
+): AppState {
+    return state.copy(screen = Screen.SitePermissionOptionsScreen(sitePermission = action.sitePermission))
+}
+
+@Suppress("ComplexMethod", "ReturnCount")
 private fun navigateUp(state: AppState, action: AppAction.NavigateUp): AppState {
     if (state.screen is Screen.Browser) {
         val screen = if (action.tabId != null) {
@@ -192,6 +206,10 @@ private fun navigateUp(state: AppState, action: AppAction.NavigateUp): AppState 
             Screen.Home
         }
         return state.copy(screen = screen)
+    }
+
+    if (state.screen is Screen.SitePermissionOptionsScreen) {
+        return state.copy(screen = Screen.Settings(page = Screen.Settings.Page.SitePermissions))
     }
 
     if (state.screen !is Screen.Settings) {
@@ -214,7 +232,6 @@ private fun navigateUp(state: AppState, action: AppAction.NavigateUp): AppState 
         Screen.Settings.Page.PrivacyExceptions -> Screen.Settings(page = Screen.Settings.Page.Privacy)
         Screen.Settings.Page.PrivacyExceptionsRemove -> Screen.Settings(page = Screen.Settings.Page.PrivacyExceptions)
         Screen.Settings.Page.SitePermissions -> Screen.Settings(page = Screen.Settings.Page.Privacy)
-        Screen.Settings.Page.Autoplay -> Screen.Settings(page = Screen.Settings.Page.SitePermissions)
         Screen.Settings.Page.Studies -> Screen.Settings(page = Screen.Settings.Page.Privacy)
         Screen.Settings.Page.SecretSettings -> Screen.Settings(page = Screen.Settings.Page.Advanced)
 

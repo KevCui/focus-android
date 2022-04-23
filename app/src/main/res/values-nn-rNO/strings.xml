@@ -497,6 +497,29 @@
     <!-- %1$s will be replaced by the app name and build variant(e.g. Firefox Focus, Firefox Klar Nightly) -->
     <string name="onboarding_title">Velkomen til %1$s!</string>
 
+    <!-- Onboarding: Description -->
+    <string name="onboarding_description">Privat surfing på neste nivå når du ønskjer det</string>
+
+    <!-- Onboarding: Incognito Title -->
+    <string name="onboarding_incognito_title">Der inkognito møter usynleg</string>
+
+    <!-- Onboarding: Incognito Description -->
+    <!-- Text %s will be replaced with the name of the app (e.g. Focus, Klar) -->
+    <string name="onboarding_incognito_description">%s er ein personvern-først nettlesar med ekstra sterkt sporings- og infokapselvern innebygd.</string>
+
+    <!-- Onboarding: History Title -->
+    <string name="onboarding_history_title">Surf som om det aldri skjedde</string>
+
+    <!-- Onboarding: History Description -->
+    <string moz:removedIn="100" name="onboarding_history_description" tools:ignore="UnusedResources">Eitt trykk slettar nettlesarhistorikken og infokapslane — og hindrar annonsar i å spore deg rundt.</string>
+    <string name="onboarding_history_description2">Eitt trykk slettar nettlesarhistorikken og infokapslane — og hindrar annonsar i å spore deg.</string>
+
+    <!-- Onboarding: Protection Title -->
+    <string name="onboarding_protection_title">Personvern som passar alle situasjonar</string>
+
+    <!-- Onboarding: Protection Description -->
+    <string name="onboarding_protection_description">Dersom nettlesingsbehova dine endrar seg, er det enkelt å skalere personverninnstillingane opp eller ned.</string>
+
     <!-- Onboarding: Start browsing -->
     <string name="onboarding_start_browsing">Start nettlesinga</string>
 
@@ -655,6 +678,48 @@
 
     <!-- Preference for autoplay -->
     <string name="preference_autoplay">Automatisk avspeling</string>
+
+    <!-- Heading for the instructions to allow a permission -->
+    <string name="phone_feature_blocked_intro">For å tillate det:</string>
+
+    <!-- First step for the allowing a permission -->
+    <string name="phone_feature_blocked_step_settings">1. Gå til Android-innstillingar</string>
+
+    <!-- Second step for the allowing a permission -->
+    <string name="phone_feature_blocked_step_permissions"><![CDATA[2. Trykk på <b>Løyve</b>]]></string>
+
+    <!-- Button label that take the user to the Android App setting -->
+    <string name="phone_feature_go_to_settings">Gå til Innstillingar</string>
+
+    <!-- Third step for allowing a permission. The placeholder will be updated by, for example, "Camera" -->
+    <string name="phone_feature_blocked_step_feature"><![CDATA[3. Slå <b>%1$s</b> PÅ]]></string>
+
+    <!-- Preference for altering the camera access for all websites -->
+    <string name="preference_phone_feature_camera">Kamera</string>
+
+    <!-- Preference for altering the microphone access for all websites -->
+    <string name="preference_phone_feature_microphone">Mikrofon</string>
+
+    <!-- Preference for altering the location access for all websites -->
+    <string name="preference_phone_feature_location">Plassering</string>
+
+    <!-- Preference for altering the notification access for all websites -->
+    <string name="preference_phone_feature_notification">Varsel</string>
+
+    <!-- Preference for altering the EME access for all websites -->
+    <string name="preference_phone_feature_media_key_system_access">DRM-kontrollert innhald</string>
+
+    <!-- Label that indicates that a permission must be asked always -->
+    <string name="preference_option_phone_feature_ask_to_allow">Spør om løyve</string>
+
+    <!-- Label that indicates that a permission must be blocked -->
+    <string name="preference_option_phone_feature_blocked">Blokkert</string>
+
+    <!-- Label that indicates that a permission must be allowed -->
+    <string name="preference_option_phone_feature_allowed">Tillate</string>
+
+    <!--Label that indicates a permission is by the Android OS-->
+    <string name="phone_feature_blocked_by_android">Blokkert av Android</string>
 
     <!-- Preference for allow autoplay audio and video-->
     <string name="preference_allow_audio_video_autoplay">Tillat lyd og video</string>
@@ -912,7 +977,21 @@ The new line here must be kept as the second half of the string is clickable for
     <!-- Content description (not visible, for screen readers etc.): Button that closes a tab n the sessions list -->
     <string name="close_tab">Lat att fane</string>
 
+    <!-- Contextual Feature Recommendation Popups -->
+    <!-- CFR for Toolbar Shield Icon (Banner Info Message) -->
+    <string name="cfr_for_toolbar_shield_icon">Det ser ut til at denne nettstaden prøvde å spore deg. Klikk på skjoldet for nettstadinnstillingar og sporingsblokkeringsstatistikk.</string>
+    <!-- Content description (not visible, for screen readers etc.): Button that closes the CFR popup -->
+    <string name="cfr_close_button_description">Lat att sprettoppvindauge</string>
+
+    <!-- Tool Tip for: Privacy and Security Settings Screen  task : https://github.com/mozilla-mobile/focus-android/issues/6211 -->
+    <!-- Tool Tip Title -->
+    <string name="tool_tip_title">Du er verna!</string>
+    <!-- Tool Tip Message -->
+    <string name="tool_tip_message">Desse standardinnstillingane gir sterkt vern. Men det er enkelt å tilpasse innstillingane for å møte dine spesielle behov.</string>
     <!-- Tool Tip "X" button Content description (not visible, for screen readers etc.) :Button that closes the tool tip -->
     <string name="tool_tip_dismiss_button_content_description">Avvis</string>
 
-    </resources>
+    <!-- CFR for Toolbar Delete Icon (Banner Info Message) -->
+    <string name="cfr_for_toolbar_delete_icon">Bli kvitt dei personlege dataa dine, nettlesarhistorikk og meir frå denne økta ved å trykkje på søppelknappen. Prøv det!</string>
+
+</resources>
