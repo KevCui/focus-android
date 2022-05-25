@@ -22,6 +22,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.lifecycle.Lifecycle
 import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -70,19 +71,18 @@ import org.mozilla.focus.contextmenu.ContextMenuCandidates
 import org.mozilla.focus.databinding.FragmentBrowserBinding
 import org.mozilla.focus.downloads.DownloadService
 import org.mozilla.focus.engine.EngineSharedPreferencesListener
-import org.mozilla.focus.ext.FEATURE_TABS
 import org.mozilla.focus.ext.accessibilityManager
 import org.mozilla.focus.ext.components
 import org.mozilla.focus.ext.disableDynamicBehavior
 import org.mozilla.focus.ext.enableDynamicBehavior
 import org.mozilla.focus.ext.ifCustomTab
 import org.mozilla.focus.ext.isCustomTab
-import org.mozilla.focus.ext.isMultiTabsEnabled
 import org.mozilla.focus.ext.requireComponents
 import org.mozilla.focus.ext.settings
 import org.mozilla.focus.ext.showAsFixed
 import org.mozilla.focus.ext.titleOrDomain
 import org.mozilla.focus.menu.browser.DefaultBrowserMenu
+import org.mozilla.focus.nimbus.FocusNimbus
 import org.mozilla.focus.open.OpenWithFragment
 import org.mozilla.focus.session.ui.TabsPopup
 import org.mozilla.focus.settings.permissions.permissionoptions.SitePermissionOptionsStorage
@@ -404,6 +404,13 @@ class BrowserFragment :
                 disableDynamicBehavior(binding.engineView)
                 showAsFixed(requireContext(), binding.engineView)
             }
+        }
+    }
+
+    override fun onPictureInPictureModeChanged(enabled: Boolean) {
+        pictureInPictureFeature?.onPictureInPictureModeChanged(enabled)
+        if (lifecycle.currentState == Lifecycle.State.CREATED) {
+            onBackPressed()
         }
     }
 
@@ -749,9 +756,11 @@ class BrowserFragment :
 
         TelemetryWrapper.openFullBrowser()
 
-        if (requireComponents.experiments.isMultiTabsEnabled) {
+        val multiTabsFeature = FocusNimbus.features.tabs
+        val multiTabsConfig = multiTabsFeature.value(context = requireContext())
+        multiTabsFeature.recordExposure()
+        if (multiTabsConfig.isMultiTab) {
             requireComponents.customTabsUseCases.migrate(tab.id)
-            requireComponents.experiments.recordExposureEvent(FEATURE_TABS)
         } else {
             // A Middleware will take care of either opening a new tab for this URL or reusing an
             // already existing tab.

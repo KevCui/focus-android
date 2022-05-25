@@ -13,7 +13,9 @@ import android.os.Bundle
 import android.util.AttributeSet
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.preference.PreferenceManager
 import mozilla.components.browser.state.selector.privateTabs
 import mozilla.components.concept.engine.EngineView
@@ -44,6 +46,8 @@ import org.mozilla.focus.state.Screen
 import org.mozilla.focus.telemetry.TelemetryWrapper
 import org.mozilla.focus.utils.SupportUtils
 
+private const val REQUEST_TIME_OUT = 2000L
+
 @Suppress("TooManyFunctions", "LargeClass")
 open class MainActivity : LocaleAwareAppCompatActivity() {
     private val intentProcessor by lazy {
@@ -55,7 +59,10 @@ open class MainActivity : LocaleAwareAppCompatActivity() {
         get() = components.store.state.privateTabs.size
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
+
         updateSecureWindowFlags()
+
         super.onCreate(savedInstanceState)
 
         // Checks if Activity is currently in PiP mode if launched from external intents, then exits it
@@ -84,11 +91,16 @@ open class MainActivity : LocaleAwareAppCompatActivity() {
         }
         setContentView(R.layout.activity_main)
 
+        val isTheFirstLaunch = settings.getAppLaunchCount() == 0
+        if (isTheFirstLaunch) {
+            setSplashScreenPreDrawListener()
+        }
+
         val intent = SafeIntent(intent)
 
         // The performance check was added after the shouldShowFirstRun to take as much of the
         // code path as possible
-        if (settings.shouldShowFirstrun() &&
+        if (settings.isFirstRun() &&
             !Performance.processIntentIfPerformanceTest(intent, this)
         ) {
             components.appStore.dispatch(AppAction.ShowFirstRun)
@@ -113,6 +125,23 @@ open class MainActivity : LocaleAwareAppCompatActivity() {
         lifecycle.addObserver(navigator)
 
         AppReviewUtils.showAppReview(this)
+    }
+
+    private fun setSplashScreenPreDrawListener() {
+        val content: View = findViewById(android.R.id.content)
+        val endTime = System.currentTimeMillis() + REQUEST_TIME_OUT
+        content.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+            override fun onPreDraw(): Boolean {
+                return if (System.currentTimeMillis() >= endTime) {
+                    components.experiments.applyPendingExperiments()
+                    content.viewTreeObserver.removeOnPreDrawListener(this)
+                    true
+                } else {
+                    false
+                }
+            }
+        }
+        )
     }
 
     private fun checkAndExitPiP() {
@@ -223,10 +252,10 @@ open class MainActivity : LocaleAwareAppCompatActivity() {
         }
     }
 
-    override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
+    override fun onCreateView(parent: View?, name: String, context: Context, attrs: AttributeSet): View? {
         return if (name == EngineView::class.java.name) {
             components.engine.createView(context, attrs).asView()
-        } else super.onCreateView(name, context, attrs)
+        } else super.onCreateView(parent, name, context, attrs)
     }
 
     override fun onBackPressed() {

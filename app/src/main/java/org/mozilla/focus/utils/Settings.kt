@@ -237,7 +237,7 @@ class Settings(
             .apply()
     }
 
-    fun shouldShowFirstrun(): Boolean =
+    fun isFirstRun(): Boolean =
         !preferences.getBoolean(FirstrunFragment.FIRSTRUN_PREF, false)
 
     fun shouldUseBiometrics(): Boolean =

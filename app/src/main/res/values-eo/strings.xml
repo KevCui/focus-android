@@ -20,6 +20,8 @@
     <!-- "Snackbar" shown after the user has pressed the 'erase' button at the end of a browsing session -->
     <string name="feedback_erase">Via retuma historio estis viŝita.</string>
 
+    <string name="feedback_erase2">Retuma historio viŝita</string>
+
     <!-- "Snackbar" shown after the user has pressed the 'erase' button at the end of a custom tab browsing session -->
     <string name="feedback_erase_custom_tab">La retuma historio de la langeto estis viŝita.</string>
 
@@ -45,6 +47,11 @@
 
     <!-- Menu item: Add the current page as a shortcut to the device's home screen (launcher). -->
     <string name="menu_add_to_home_screen">Aldoni al hejmekrano</string>
+
+    <!-- Menu item: Add the current site as a shortcut on the Home screen -->
+    <string name="menu_add_to_shortcuts">Aldoni al ŝparvojoj</string>
+    <!-- Menu item: Remove the current site as a shortcut from the Home screen -->
+    <string name="menu_remove_from_shortcuts">Forigi el ŝparvojoj</string>
 
     <!-- Menu item: Shows information about features and changes that are new to this version -->
     <string name="menu_whats_new">Novaĵoj</string>
@@ -116,6 +123,19 @@
          Clicking this action will launch Focus and perform a search in the default search engine. -->
     <string name="text_selection_search_action">Serĉi private</string>
 
+    <!-- Content of about focus. Argument 1 is the app name (Firefox Focus/Firefox Klar/etc).
+         Argument 2 is the url for the learn-more link. -->
+    <string name="about_content"><![CDATA[<p>%1$s igas vin reganto.</p>
+<p>Uzu ĝin kiel privatan retumilon:
+  <ul>
+    <li>Serĉu kaj retumu rekte el la programo</li>
+    <li>Bloku spurilojn (aŭ agordi por permesi spurilojn)</li>
+    <li>Forigu kuketojn kaj ankaŭ retuman kaj serĉan historion</li>
+  </ul>
+</p>
+<p>%1$s estas farita de Mozilla. Nia misio estas stimuli sanan kaj malfermitan interreton.<br/>
+<a href="%2$s">Pli da informo</a></p>]]></string>
+
     <!-- Header for the Privacy and Security settings menu -->
     <string name="preference_privacy_and_security_header">Privateco kaj sekureco</string>
 
@@ -131,6 +151,9 @@
     <!-- %1$s will be replaced by the app name (e.g. Firefox Focus) -->
     <string name="preference_mozilla_summary">Pri %1$s, helpo</string>
 
+    <!-- Preference category for ad blocking and enhanced tracking protection settings -->
+    <string name="preference_category_tracking_protection3">Plibonigita protekto kontraŭ spurado</string>
+
     <!-- Preference category for settings related to controlling web content -->
     <string name="preference_category_web_content">Teksaĵa enhavo</string>
 
@@ -139,6 +162,9 @@
 
     <!-- Preference category for General Settings -->
     <string name="preference_category_general">Ĝenerala</string>
+
+    <!-- Preference summary for General Settings category; the two things users can find in this category -->
+    <string name="preference_general_summary2">Norma retumilo, lingvo</string>
 
     <!-- Preference category for settings about sending usage data -->
     <string name="preference_category_data_collection_use">Kolekto kaj uzo de datumoj</string>
@@ -169,8 +195,16 @@
     <!-- Title of "switch" preference that enables/disables autocomplete for the default list -->
     <string name="preference_switch_autocomplete_topsites">Por la plej vizititaj retejoj</string>
 
+    <!-- Summary for the toggle to enable autocomplete for the topsites list
+    %s is a placeholder for the app name (e.g. Firefox Focus)-->
+    <string name="preference_autocomplete_topsite_summary2">Aktivigu por igi %s aŭtomate kompletigi pli ol 450 popularajn adresojn en la adresa strio.</string>
+
     <!-- Title of "switch" preference that enables/disables autocomplete for the user-defined list -->
     <string name="preference_switch_autocomplete_user_list">Por retejoj, kiujn vi aldonas</string>
+
+    <!-- Summary for the toggle to enable autocomplete for the user-defined list
+     %s is a placeholder for the app name (e.g. Firefox Focus)-->
+    <string name="preference_autocomplete_user_list_summary2">Akvitigi por ke %s aŭtomate kompletigu viajn plej ŝatatajn retadresojn.</string>
 
     <!-- Preference category: Manage (user-defined) sites -->
     <string name="preference_category_autocomplete_manage_sites">Administri retejojn</string>
@@ -180,6 +214,12 @@
 
     <!-- Action at the bottom of the list of custom autocomplete URLs that will open a new screen to add a new URL to the list. -->
     <string name="preference_autocomplete_action_add">+ Aldoni personecigitan adreson</string>
+
+    <!-- Explanation text above the list of custom autocomplete URLs. -->
+    <string name="preference_autocomplete_explanation_text">Via listo de aŭtomata plenigo:</string>
+
+    <!-- Action at the bottom of the list of custom autocomplete URLs that will open a new screen to add a new URL to the list. -->
+    <string name="preference_autocomplete_action_add2">Aldoni adreson</string>
 
     <!-- Title of the screen for adding custom autocomplete URLs. -->
     <string name="preference_autocomplete_title_add">Aldoni personecigitan adreson</string>
@@ -245,8 +285,14 @@
     <string name="preference_privacy_block_content_summary2">Se vi ŝaltas tion ĉi, kelkaj paĝoj povus neatendite konduti</string>
     <string name="preference_privacy_category_cookies">Bloki kuketojn</string>
 
+    <!-- Three options for Cookie blocking. Yes (All cookies Blocked), Block 3rd-party cookies
+    only (Only 3rd-party Cookies Blocked), No (No cookies blocked) -->
+    <string name="preference_privacy_should_block_cookies_no_option2">Ne, dankon</string>
     <string name="preference_privacy_should_block_cookies_third_party_tracker_cookies_option">Bloki nur nerektajn spurajn kuketojn</string>
     <string name="preference_privacy_should_block_cookies_third_party_only_option">Bloki nur nerektajn kuketojn</string>
+
+    <string name="preference_privacy_should_block_cookies_cross_site_option">Bloki interretejajn kuketojn</string>
+    <string name="preference_privacy_should_block_cookies_yes_option2">Jes, bonvolu</string>
 
     <!-- Preference Title: Biometrics can be used to unlock Focus if the previous session's data was not erased by the user. -->
     <string name="preference_security_biometric">Uzi fingrospuron por malbloki programon</string>
@@ -299,6 +345,9 @@
     <!-- Header for the list of installed search engines -->
     <string name="preference_search_installed_search_engines">Instalitaj serĉiloj</string>
 
+    <!-- Header for the list of installed search engines -->
+    <string name="preference_choose_search_engine">Elekti serĉilon</string>
+
     <!-- Action for restoring the default list of search engines -->
     <string name="preference_search_restore">Remeti normajn serĉilojn</string>
 
@@ -307,6 +356,11 @@
     <string name="preference_search_add2">+ Aldoni alian serĉilon</string>
     <string name="preference_search_remove_title">Forigi serĉilojn</string>
     <string name="preference_search_remove">Forigi</string>
+
+    <!-- Action for dding an additional search engine to the list -->
+    <string name="preference_search_add3">Aldoni alian serĉilon</string>
+    <!-- Explanation text above the list of search engines-->
+    <string name="preference_select_preferred_engine">Elektu vian preferatan serĉilon:</string>
 
     <!-- Title: Homescreen tips settings toggle to determine whether or not tips are displayed when
      a user first launches the app. -->
@@ -438,7 +492,17 @@
 
 
 
-  <!-- First run tour (Default browser): Title -->
+  <!-- Onboarding: Title -->
+    <!-- %1$s will be replaced by the app name and build variant(e.g. Firefox Focus, Firefox Klar Nightly) -->
+    <string name="onboarding_title">Bonvenon al %1$s!</string>
+
+    <!-- Onboarding: Incognito Title -->
+    <string name="onboarding_incognito_title">Tie, kie renkontiĝas anonimeco kaj nevideblo</string>
+
+    <!-- Onboarding: Start browsing -->
+    <string name="onboarding_start_browsing">Komenci retumi</string>
+
+    <!-- First run tour (Default browser): Title -->
     <string name="firstrun_defaultbrowser_title">Plibonigi vian privatecon</string>
     <!-- First run tour (Default browser): Text. -->
     <string name="firstrun_defaultbrowser_text2">Privata retumo pli altnivela, kun blokado de reklamoj kaj aliaj enhavoj, kiuj povas spuri vin trans retejoj kaj malrapidigi la ŝargon de paĝoj.</string>
@@ -546,20 +610,101 @@
   <!-- Checkbox menu item text to request desktop site -->
     <string name="preference_performance_request_desktop_site">Peti version por komputiloj</string>
 
+    <!-- Checkbox menu item text to request desktop site -->
+    <string name="preference_performance_request_desktop_site2">Skribotabla retejo</string>
+
     <!-- Displayed after a user long presses on the URL in a custom tab to copy the URL -->
     <string name="custom_tab_copy_url_action">Retadreso kopiita</string>
 
     <!-- Description of what a user may find in the Advanced Setting category, used for debugging -->
     <string name="preference_advanced_summary">Iloj por programistoj</string>
 
+    <!-- Preference for open links in third party apps -->
+    <string name="preferences_open_links_in_apps">Malfermi ligilojn per programoj</string>
+
     <!-- Title of Advanced Setting category -->
     <string name="preference_category_advanced">Spertula</string>
+
+    <!-- Preference for site permissions -->
+    <string name="preference_site_permissions">Permesoj por retejo</string>
+
+    <!-- Preference for autoplay -->
+    <string name="preference_autoplay">Aŭtomata ludado</string>
+
+    <!-- Heading for the instructions to allow a permission -->
+    <string name="phone_feature_blocked_intro">Por permesi ion:</string>
+
+    <!-- First step for the allowing a permission -->
+    <string name="phone_feature_blocked_step_settings">1. Iru al Agordoj de Android</string>
+
+    <!-- Second step for the allowing a permission -->
+    <string name="phone_feature_blocked_step_permissions"><![CDATA[2. Tuŝetu <b>Permesoj</b>]]></string>
+
+    <!-- Button label that take the user to the Android App setting -->
+    <string name="phone_feature_go_to_settings">Iri al agordoj</string>
+
+    <!-- Third step for allowing a permission. The placeholder will be updated by, for example, "Camera" -->
+    <string name="phone_feature_blocked_step_feature"><![CDATA[3. Aktivigu <b>%1$s</b>]]></string>
+
+    <!-- Preference for altering the camera access for all websites -->
+    <string name="preference_phone_feature_camera">Filmilo</string>
+
+    <!-- Preference for altering the microphone access for all websites -->
+    <string name="preference_phone_feature_microphone">Mikrofono</string>
+
+    <!-- Preference for altering the location access for all websites -->
+    <string name="preference_phone_feature_location">Loko</string>
+
+    <!-- Preference for altering the notification access for all websites -->
+    <string name="preference_phone_feature_notification">Sciigoj</string>
+
+    <!-- Preference for altering the EME access for all websites -->
+    <string name="preference_phone_feature_media_key_system_access">Enhavo protektita de DRM</string>
+
+    <!-- Label that indicates that a permission must be asked always -->
+    <string name="preference_option_phone_feature_ask_to_allow">Demandi antaŭ ol permesi</string>
+
+    <!-- Label that indicates that a permission must be blocked -->
+    <string name="preference_option_phone_feature_blocked">Blokita</string>
+
+    <!-- Label that indicates that a permission must be allowed -->
+    <string name="preference_option_phone_feature_allowed">Permesita</string>
+
+    <!--Label that indicates a permission is by the Android OS-->
+    <string name="phone_feature_blocked_by_android">Blokita de Android</string>
+
+    <!-- Preference for allow autoplay audio and video-->
+    <string name="preference_allow_audio_video_autoplay">Permesi sonon kaj videon</string>
+
+    <!-- Preference for block autoplay audio only-->
+    <string name="preference_block_autoplay_audio_only">Bloki nur sonon</string>
+
+    <!-- Preference summary for block autoplay audio only-->
+    <string name="preference_block_autoplay_audio_only_summary">Rekomenditaj</string>
+
+    <!-- Preference for block autoplay audio and video-->
+    <string name="preference_block_autoplay_audio_video">Bloki sonon kaj videon</string>
+
+    <!-- Preference for studies -->
+    <string name="preference_studies">Studoj</string>
+
+    <!-- Preference for studies summary-->
+    <string name="preference_studies_summary">Firefox povas de tempo al tempo instali kaj fari studojn.</string>
+
+    <!-- Learn more link for studies, links to an article for more information about studies. -->
+    <string name="studies_learn_more">Pli da informo</string>
+
+    <!-- Dialog message shown when some changes are made on studies -->
+    <string name="studies_restart_app">Tiu ĉi programo finiĝos por apliki ŝanĝojn</string>
 
     <!-- Title of the remove studies button -->
     <string name="studies_remove">Forigi</string>
 
     <!-- Title of the active section on the studies list -->
     <string name="studies_active">Aktiva</string>
+
+    <!-- Title of the completed section on the studies list -->
+    <string name="studies_completed">Kompleta</string>
 
     <!-- Preference to enable remote debugging of the app via USB or Wi-Fi -->
     <string name="preference_remote_debugging">Fora senerarigo per USB aŭ sendrata reto</string>

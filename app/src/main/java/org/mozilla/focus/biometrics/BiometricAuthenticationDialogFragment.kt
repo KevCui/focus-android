@@ -21,6 +21,7 @@ import org.mozilla.focus.databinding.BiometricPromptDialogContentBinding
 import org.mozilla.focus.ext.requireComponents
 import org.mozilla.focus.state.AppAction
 import org.mozilla.focus.topsites.TopSitesIntegration
+import org.mozilla.focus.utils.Features.DELETE_TOP_SITES_WHEN_NEW_SESSION_BUTTON_CLICKED
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 @Suppress("TooManyFunctions")
@@ -65,7 +66,7 @@ class BiometricAuthenticationDialogFragment : AppCompatDialogFragment(), Lifecyc
         binding.description.setText(R.string.biometric_auth_description)
         binding.newSessionButton.setText(R.string.biometric_auth_new_session)
         binding.newSessionButton.setOnClickListener {
-            biometricNewSessionButtonClicked()
+            triggerNewSession()
         }
 
         binding.fingerprintIcon.setImageResource(R.drawable.ic_fingerprint)
@@ -76,9 +77,12 @@ class BiometricAuthenticationDialogFragment : AppCompatDialogFragment(), Lifecyc
         super.onResume()
 
         resetErrorText()
-
-        handler = BiometricAuthenticationHandler(requireContext(), this)
-        handler?.startAuthentication()
+        if (!Biometrics.hasFingerprintHardware(requireContext())) {
+            triggerNewSession()
+        } else {
+            handler = BiometricAuthenticationHandler(requireContext(), this)
+            handler?.startAuthentication()
+        }
     }
 
     override fun onPause() {
@@ -93,10 +97,12 @@ class BiometricAuthenticationDialogFragment : AppCompatDialogFragment(), Lifecyc
         _binding = null
     }
 
-    private fun biometricNewSessionButtonClicked() {
+    private fun triggerNewSession() {
         requireComponents.tabsUseCases.removePrivateTabs()
         requireComponents.appStore.dispatch(AppAction.ShowHomeScreen)
-        topSitesIntegration.deleteAllTopSites()
+        if (DELETE_TOP_SITES_WHEN_NEW_SESSION_BUTTON_CLICKED) {
+            topSitesIntegration.deleteAllTopSites()
+        }
         dismiss()
     }
 

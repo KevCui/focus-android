@@ -674,6 +674,33 @@
     <!-- Preference for autoplay -->
     <string name="preference_autoplay">Automaattinen toisto</string>
 
+    <!-- Preference for altering the camera access for all websites -->
+    <string name="preference_phone_feature_camera">Kamera</string>
+
+    <!-- Preference for altering the microphone access for all websites -->
+    <string name="preference_phone_feature_microphone">Mikrofoni</string>
+
+    <!-- Preference for altering the location access for all websites -->
+    <string name="preference_phone_feature_location">Sijainti</string>
+
+    <!-- Preference for altering the notification access for all websites -->
+    <string name="preference_phone_feature_notification">Ilmoitus</string>
+
+    <!-- Preference for altering the EME access for all websites -->
+    <string name="preference_phone_feature_media_key_system_access">DRM-suojattu sisältö</string>
+
+    <!-- Label that indicates that a permission must be asked always -->
+    <string name="preference_option_phone_feature_ask_to_allow">Kysy lupaa</string>
+
+    <!-- Label that indicates that a permission must be blocked -->
+    <string name="preference_option_phone_feature_blocked">Estetty</string>
+
+    <!-- Label that indicates that a permission must be allowed -->
+    <string name="preference_option_phone_feature_allowed">Sallittu</string>
+
+    <!--Label that indicates a permission is by the Android OS-->
+    <string name="phone_feature_blocked_by_android">Estetty Androidin toimesta</string>
+
     <!-- Preference for allow autoplay audio and video-->
     <string name="preference_allow_audio_video_autoplay">Salli ääni ja video</string>
 

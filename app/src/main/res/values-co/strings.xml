@@ -28,7 +28,7 @@
     <string name="search_hint">Ricercà %1$s</string>
 
     <!-- Menu item: Share the currently visible page -->
-    <string name="menu_share">Sparte...</string>
+    <string name="menu_share">Sparte…</string>
 
     <!-- Menu item: Report an issue on the current site -->
     <string name="menu_report_site_issue">Signalà un penseru nant’à stu situ</string>
@@ -42,7 +42,7 @@
       will be shown if there are multiple browsers and we do not know which one is the default
       browser or in case Focus is actually the default browser. Clicking this menu item will show
       a screen with multiple browsers (or other apps that can open the current URL) to choose from. -->
-    <string name="menu_open_with_a_browser2">Apre cù...</string>
+    <string name="menu_open_with_a_browser2">Apre cù…</string>
 
     <!-- Menu item: Add the current page as a shortcut to the device's home screen (launcher). -->
     <string name="menu_add_to_home_screen">Fissà à u screnu d’accolta</string>
@@ -126,11 +126,11 @@
          Argument 2 is the url for the learn-more link. -->
     <string name="about_content"><![CDATA[<p>%1$s vi aiuta à stà à e cumande.</p>
 <p>Impiegatelu cum’è un navigatore privatu :
-· <ul>
-· <li>Fate ricerche è navigate cù l’appiecazione</li>
-· <li>Bluccate i perseguitatori (o mudificà e preferenze per auturizalli)</li>
-· <li>Squassà i canistrelli è ancu e cronolugie di navigazione è di ricerca</li>
-· </ul>
+  <ul>
+    <li>Fate ricerche è navigate cù l’appiecazione</li>
+    <li>Bluccate i perseguitatori (o mudificà e preferenze per auturizalli)</li>
+    <li>Squassate i canistrelli è ancu e cronolugie di navigazione è di ricerca</li>
+  </ul>
 </p>
 <p>%1$s hè sviluppatu da Mozilla. A nostra missione hè d’incuragisce un Internet apertu è in bella saluta.<br/>
 <a href="%2$s">Per sapene di più</a></p>]]></string>
@@ -407,7 +407,7 @@
 
     <!-- This text is not visible. Instead it will be read by the accessibility service once we start
      loading a website -->
-    <string name="accessibility_announcement_loading">Caricamentu...</string>
+    <string name="accessibility_announcement_loading">Caricamentu</string>
 
     <!-- This text is not visible. Instead it will be read by the accessibility service once we
      finished loading a website -->
@@ -876,7 +876,7 @@ The new line here must be kept as the second half of the string is clickable for
     <!-- Title of the preference to enable "HTTPS-Only" mode -->
     <string name="preference_https_only_title">Modu solu HTTPS</string>
     <!-- Description of the preference to enable "HTTPS-Only" mode. -->
-    <string moz:removedIn="98" name="preference_https_only_summary2" tools:ignore="UnusedResources">Tentativu autumaticu di cunnessione à i siti impieghendu HTTPS per aummentà a sicurità. E cunnessioni HTTPS furniscenu una cunnessione sicura è cifrata à i siti visitati.</string>
+    <string moz:removedIn="98" name="preference_https_only_summary2" tools:ignore="UnusedResources">Tentativu autumaticu di cunnessione à i siti impieghendu HTTPS per aumentà a sicurità. E cunnessioni HTTPS furniscenu una cunnessione sicura è cifrata à i siti visitati.</string>
 
     <string name="preference_https_only_summary3">Tentativu autumaticu di cunnessione à i siti impieghendu u protocollu di cifratura HTTPS per aumentà a sicurità.</string>
 
@@ -971,7 +971,7 @@ The new line here must be kept as the second half of the string is clickable for
     <string name="errorpage_httpsonly_title">U situ richiestu ùn permette micca u modu HTTPS</string>
 
     <!-- The text of the error page for websites that do not support HTTPS when HTTPS-Only is turned on. %1$s will get replaced with the name of the app (e.g. "Firefox Focus") -->
-    <string name="errorpage_httpsonly_message">Per aummentà a sicurità, l’ozzione predefinita di %1$s hè di fà un tentativu autumaticu di cunnessione impieghendu HTTPS. Per cambià sta definizione, o per sapene di più, andate in Preferenze &gt; Vita privata è sicurità &gt; Sicurità.</string>
+    <string name="errorpage_httpsonly_message">Per aumentà a sicurità, l’ozzione predefinita di %1$s hè di fà un tentativu autumaticu di cunnessione impieghendu HTTPS. Per cambià sta definizione, o per sapene di più, andate in Preferenze &gt; Vita privata è sicurità &gt; Sicurità.</string>
 
     <!-- Sessions List -->
     <!-- Content description (not visible, for screen readers etc.): Button that closes a tab n the sessions list -->

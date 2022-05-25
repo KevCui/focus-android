@@ -161,8 +161,11 @@ class BrowserToolbarIntegration(
                 sessionId = customTabId,
                 useCases = customTabsUseCases,
                 menuBuilder = menu.menuBuilder,
+                window = fragment.activity?.window,
                 menuItemIndex = menu.menuBuilder.items.size - 1,
-                closeListener = { fragment.closeCustomTab() }
+                closeListener = { fragment.closeCustomTab() },
+                updateToolbarBackground = true,
+                forceActionButtonTinting = false,
             )
         }
 
@@ -266,7 +269,6 @@ class BrowserToolbarIntegration(
                             onDismiss = ::onDismissTrackingProtectionCfr
                         ).apply {
                             show()
-                            fragment.components?.appStore?.dispatch(AppAction.ShowTrackingProtectionCfrChange(false))
                         }
                     }
                 }
@@ -274,6 +276,7 @@ class BrowserToolbarIntegration(
     }
 
     private fun onDismissTrackingProtectionCfr() {
+        fragment.components?.appStore?.dispatch(AppAction.ShowTrackingProtectionCfrChange(false))
         fragment.requireContext().settings.shouldShowCfrForTrackingProtection = false
     }
 

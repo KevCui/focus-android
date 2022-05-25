@@ -61,6 +61,7 @@ import org.mozilla.focus.experiments.createNimbus
 import org.mozilla.focus.ext.components
 import org.mozilla.focus.ext.settings
 import org.mozilla.focus.media.MediaSessionService
+import org.mozilla.focus.nimbus.FocusNimbus
 import org.mozilla.focus.notification.PrivateNotificationMiddleware
 import org.mozilla.focus.search.SearchFilterMiddleware
 import org.mozilla.focus.search.SearchMigration
@@ -71,7 +72,6 @@ import org.mozilla.focus.tabs.MergeTabsMiddleware
 import org.mozilla.focus.telemetry.GleanMetricsService
 import org.mozilla.focus.telemetry.TelemetryMiddleware
 import org.mozilla.focus.topsites.DefaultTopSitesStorage
-import org.mozilla.focus.utils.Features
 import org.mozilla.focus.utils.Settings
 import java.util.Locale
 
@@ -131,8 +131,10 @@ class Components(
     }
 
     val store by lazy {
-        val cfrMiddleware = if (Features.IS_ERASE_CFR_ENABLED || Features.IS_TRACKING_PROTECTION_CFR_ENABLED) {
-            listOf(CfrMiddleware(context.components))
+        val onboardingFeature = FocusNimbus.features.onboarding
+        val cfrMiddleware = if (onboardingFeature.value(context = context).isCfrEnabled) {
+            onboardingFeature.recordExposure()
+            listOf(CfrMiddleware(context))
         } else {
             listOf()
         }
@@ -186,7 +188,11 @@ class Components(
 
     val metrics: GleanMetricsService by lazy { GleanMetricsService(context) }
 
-    val experiments: NimbusApi by lazy { createNimbus(context, BuildConfig.NIMBUS_ENDPOINT) }
+    val experiments: NimbusApi by lazy {
+        createNimbus(context, BuildConfig.NIMBUS_ENDPOINT).also { api ->
+            FocusNimbus.api = api
+        }
+    }
 
     val adsTelemetry: AdsTelemetry by lazy { AdsTelemetry() }
 

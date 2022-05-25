@@ -3,8 +3,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 object Versions {
-    const val compose_version = "1.0.4"
+    const val compose_version = "1.1.1"
     const val leakcanary = "2.8.1"
+    const val sentry = "5.7.3"
 
     object AndroidX {
         const val activity_compose = "1.3.1"
@@ -20,6 +21,7 @@ object Versions {
         const val palette = "1.0.0"
         const val preferences = "1.1.1"
         const val lifecycle = "2.2.0"
+        const val splash_screen = "1.0.0-beta01"
     }
 
     object Google {
@@ -29,7 +31,7 @@ object Versions {
     }
 
     object Kotlin {
-        const val version = "1.5.31"
+        const val version = "1.6.10"
         const val coroutines = "1.6.0"
     }
 
@@ -41,7 +43,6 @@ object Versions {
     object Test {
         const val robolectric = "4.6.1"
         const val mockito = "3.11.0"
-        const val coroutines = "1.5.0"
     }
 }
 
@@ -65,6 +66,7 @@ object Dependencies {
     const val androidx_preferences = "androidx.preference:preference-ktx:${Versions.AndroidX.preferences}"
     const val androidx_recyclerview = "androidx.recyclerview:recyclerview:${Versions.AndroidX.recyclerview}"
     const val androidx_lifecycle_extensions = "androidx.lifecycle:lifecycle-extensions:${Versions.AndroidX.lifecycle}"
+    const val androidx_splash_screen = "androidx.core:core-splashscreen:${Versions.AndroidX.splash_screen}"
 
     const val google_material = "com.google.android.material:material:${Versions.Google.material}"
     const val google_accompanist_insets_ui = "com.google.accompanist:accompanist-insets-ui:${Versions.Google.accompanist}"
@@ -72,6 +74,7 @@ object Dependencies {
     const val kotlin_gradle_plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.Gradle.kotlin_plugin}"
     const val android_gradle_plugin = "com.android.tools.build:gradle:${Versions.Gradle.android_plugin}"
     const val leakcanary = "com.squareup.leakcanary:leakcanary-android-core:${Versions.leakcanary}"
+    const val sentry = "io.sentry:sentry-android:${Versions.sentry}"
 
     const val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:${Versions.Kotlin.version}"
     const val kotlin_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.Kotlin.coroutines}"
@@ -79,5 +82,5 @@ object Dependencies {
 
     const val testing_robolectric = "org.robolectric:robolectric:${Versions.Test.robolectric}"
     const val testing_mockito = "org.mockito:mockito-core:${Versions.Test.mockito}"
-    const val testing_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.Test.coroutines}"
+    const val testing_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.Kotlin.coroutines}"
 }

@@ -4,6 +4,7 @@
 
 package org.mozilla.focus.navigation
 
+import android.os.Build
 import org.mozilla.focus.R
 import org.mozilla.focus.activity.MainActivity
 import org.mozilla.focus.autocomplete.AutocompleteAddFragment
@@ -19,6 +20,7 @@ import org.mozilla.focus.fragment.UrlInputFragment
 import org.mozilla.focus.fragment.about.AboutFragment
 import org.mozilla.focus.fragment.onboarding.OnboardingFragment
 import org.mozilla.focus.locale.screen.LanguageFragment
+import org.mozilla.focus.nimbus.FocusNimbus
 import org.mozilla.focus.settings.GeneralSettingsFragment
 import org.mozilla.focus.settings.InstalledSearchEnginesSettingsFragment
 import org.mozilla.focus.settings.ManualAddSearchEngineSettingsFragment
@@ -34,7 +36,6 @@ import org.mozilla.focus.settings.permissions.permissionoptions.SitePermissionOp
 import org.mozilla.focus.settings.privacy.PrivacySecuritySettingsFragment
 import org.mozilla.focus.settings.privacy.studies.StudiesFragment
 import org.mozilla.focus.state.Screen
-import org.mozilla.focus.utils.Features
 import org.mozilla.focus.utils.ViewUtils
 import kotlin.collections.forEach as withEach
 
@@ -137,7 +138,10 @@ class MainActivityNavigation(
      * Show first run onboarding.
      */
     fun firstRun() {
-        val onboardingFragment = if (Features.ONBOARDING) {
+        val onboardingFeature = FocusNimbus.features.onboarding
+        val onboardingConfig = onboardingFeature.value(activity)
+        val onboardingFragment = if (onboardingConfig.isEnabled) {
+            onboardingFeature.recordExposure()
             OnboardingFragment.create()
         } else {
             FirstrunFragment.create()
@@ -152,12 +156,16 @@ class MainActivityNavigation(
      * Lock app.
      */
     fun lock() {
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             throw IllegalStateException("Trying to lock unsupported device")
         }
 
         val fragmentManager = activity.supportFragmentManager
         if (fragmentManager.findFragmentByTag(BiometricAuthenticationDialogFragment.FRAGMENT_TAG) != null) {
+            return
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && activity.isInPictureInPictureMode) {
             return
         }
 

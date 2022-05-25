@@ -14,9 +14,7 @@ import mozilla.components.browser.state.state.TabSessionState
 import mozilla.components.concept.engine.EngineSession
 import mozilla.components.lib.state.Middleware
 import mozilla.components.lib.state.MiddlewareContext
-import org.mozilla.focus.ext.FEATURE_TABS
-import org.mozilla.focus.ext.components
-import org.mozilla.focus.ext.isMultiTabsEnabled
+import org.mozilla.focus.nimbus.FocusNimbus
 
 /**
  * If the tabs feature is disabled then this middleware will look at incoming [TabListAction.AddTabAction]
@@ -24,17 +22,17 @@ import org.mozilla.focus.ext.isMultiTabsEnabled
  * a single tab with a merged state.
  */
 class MergeTabsMiddleware(
-    private val context: Context
+    private val appContext: Context
 ) : Middleware<BrowserState, BrowserAction> {
     override fun invoke(
         context: MiddlewareContext<BrowserState, BrowserAction>,
         next: (BrowserAction) -> Unit,
         action: BrowserAction
     ) {
-        if (this.context.components.experiments.isMultiTabsEnabled || action !is TabListAction.AddTabAction) {
-            // If the feature flag for tabs is enabled then we can just let the reducer create a
+        val multiTabsFeature = FocusNimbus.features.tabs
+        if (multiTabsFeature.value(appContext).isMultiTab || action !is TabListAction.AddTabAction) {
+            // If the experiment for tabs is enabled then we can just let the reducer create a
             // new tab.
-            this.context.components.experiments.recordExposureEvent(FEATURE_TABS)
             next(action)
             return
         }
@@ -53,6 +51,7 @@ class MergeTabsMiddleware(
             return
         }
 
+        multiTabsFeature.recordExposure()
         val mergedTab = mergeTabs(currentTab, newTab)
 
         // First we add the merged tab. The engine middleware will take care of linking the existing
