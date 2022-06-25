@@ -44,6 +44,8 @@ import org.mozilla.focus.shortcut.HomeScreen
 import org.mozilla.focus.state.AppAction
 import org.mozilla.focus.state.Screen
 import org.mozilla.focus.telemetry.TelemetryWrapper
+import org.mozilla.focus.telemetry.startuptelemetry.StartupPathProvider
+import org.mozilla.focus.telemetry.startuptelemetry.StartupTypeTelemetry
 import org.mozilla.focus.utils.SupportUtils
 
 private const val REQUEST_TIME_OUT = 2000L
@@ -57,6 +59,9 @@ open class MainActivity : LocaleAwareAppCompatActivity() {
     private val navigator by lazy { Navigator(components.appStore, MainActivityNavigation(this)) }
     private val tabCount: Int
         get() = components.store.state.privateTabs.size
+
+    private val startupPathProvider = StartupPathProvider()
+    private lateinit var startupTypeTelemetry: StartupTypeTelemetry
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -91,26 +96,24 @@ open class MainActivity : LocaleAwareAppCompatActivity() {
         }
         setContentView(R.layout.activity_main)
 
-        val isTheFirstLaunch = settings.getAppLaunchCount() == 0
-        if (isTheFirstLaunch) {
-            setSplashScreenPreDrawListener()
+        startupPathProvider.attachOnActivityOnCreate(lifecycle, intent)
+        startupTypeTelemetry = StartupTypeTelemetry(components.startupStateProvider, startupPathProvider).apply {
+            attachOnMainActivityOnCreate(lifecycle)
         }
 
-        val intent = SafeIntent(intent)
-
-        // The performance check was added after the shouldShowFirstRun to take as much of the
-        // code path as possible
-        if (settings.isFirstRun() &&
-            !Performance.processIntentIfPerformanceTest(intent, this)
-        ) {
-            components.appStore.dispatch(AppAction.ShowFirstRun)
+        val safeIntent = SafeIntent(intent)
+        val isTheFirstLaunch = settings.getAppLaunchCount() == 0
+        if (isTheFirstLaunch) {
+            setSplashScreenPreDrawListener(safeIntent)
+        } else {
+            showFirstScreen(safeIntent)
         }
 
         if (intent.hasExtra(HomeScreen.ADD_TO_HOMESCREEN_TAG)) {
-            intentProcessor.handleNewIntent(this, intent)
+            intentProcessor.handleNewIntent(this, safeIntent)
         }
 
-        if (intent.isLauncherIntent) {
+        if (safeIntent.isLauncherIntent) {
             AppOpened.fromIcons.record(AppOpened.FromIconsExtra(AppOpenType.LAUNCH.type))
 
             TelemetryWrapper.openFromIconEvent()
@@ -122,18 +125,16 @@ open class MainActivity : LocaleAwareAppCompatActivity() {
             .putInt(getString(R.string.app_launch_count), launchCount + 1)
             .apply()
 
-        lifecycle.addObserver(navigator)
-
         AppReviewUtils.showAppReview(this)
     }
 
-    private fun setSplashScreenPreDrawListener() {
+    private fun setSplashScreenPreDrawListener(safeIntent: SafeIntent) {
         val content: View = findViewById(android.R.id.content)
         val endTime = System.currentTimeMillis() + REQUEST_TIME_OUT
         content.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {
                 return if (System.currentTimeMillis() >= endTime) {
-                    components.experiments.applyPendingExperiments()
+                    showFirstScreen(safeIntent)
                     content.viewTreeObserver.removeOnPreDrawListener(this)
                     true
                 } else {
@@ -142,6 +143,17 @@ open class MainActivity : LocaleAwareAppCompatActivity() {
             }
         }
         )
+    }
+
+    private fun showFirstScreen(safeIntent: SafeIntent) {
+        // The performance check was added after the shouldShowFirstRun to take as much of the
+        // code path as possible
+        if (settings.isFirstRun() &&
+            !Performance.processIntentIfPerformanceTest(safeIntent, this)
+        ) {
+            components.appStore.dispatch(AppAction.ShowFirstRun)
+        }
+        lifecycle.addObserver(navigator)
     }
 
     private fun checkAndExitPiP() {
@@ -197,7 +209,7 @@ open class MainActivity : LocaleAwareAppCompatActivity() {
 
             browserFragment?.handleTabCrash(crash)
         }
-
+        startupPathProvider.onIntentReceived(intent)
         val intent = SafeIntent(unsafeIntent)
 
         if (intent.dataString.equals(SupportUtils.OPEN_WITH_DEFAULT_BROWSER_URL)) {

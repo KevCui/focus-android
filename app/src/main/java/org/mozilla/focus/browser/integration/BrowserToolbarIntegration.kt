@@ -34,12 +34,13 @@ import org.mozilla.focus.R
 import org.mozilla.focus.compose.CFRPopup
 import org.mozilla.focus.ext.components
 import org.mozilla.focus.ext.isCustomTab
+import org.mozilla.focus.ext.isTablet
 import org.mozilla.focus.ext.settings
 import org.mozilla.focus.fragment.BrowserFragment
 import org.mozilla.focus.menu.browser.CustomTabMenu
+import org.mozilla.focus.nimbus.FocusNimbus
 import org.mozilla.focus.state.AppAction
 import org.mozilla.focus.telemetry.TelemetryWrapper
-import org.mozilla.focus.utils.HardwareUtils
 
 @Suppress("LongParameterList", "LargeClass", "TooManyFunctions")
 class BrowserToolbarIntegration(
@@ -171,7 +172,7 @@ class BrowserToolbarIntegration(
 
         val isCustomTab = store.state.findCustomTabOrSelectedTab(customTabId)?.isCustomTab()
 
-        if (HardwareUtils.isTablet(context) && isCustomTab == false) {
+        if (context.isTablet() && isCustomTab == false) {
             navigationButtonsIntegration = NavigationButtonsIntegration(
                 context,
                 store,
@@ -256,10 +257,11 @@ class BrowserToolbarIntegration(
     @VisibleForTesting
     internal fun observeTrackingProtectionCfr() {
         trackingProtectionCfrScope = fragment.components?.appStore?.flowScoped { flow ->
-            flow.mapNotNull { state -> state.showTrackingProtectionCfr }
+            flow.mapNotNull { state -> state.showTrackingProtectionCfrForTab }
                 .ifChanged()
-                .collect { showTrackingProtectionCfr ->
-                    if (showTrackingProtectionCfr) {
+                .collect { showTrackingProtectionCfrForTab ->
+                    if (showTrackingProtectionCfrForTab[store.state.selectedTabId] == true) {
+                        FocusNimbus.features.onboarding.recordExposure()
                         CFRPopup(
                             container = fragment.requireView(),
                             text = fragment.getString(R.string.cfr_for_toolbar_shield_icon),
@@ -276,7 +278,9 @@ class BrowserToolbarIntegration(
     }
 
     private fun onDismissTrackingProtectionCfr() {
-        fragment.components?.appStore?.dispatch(AppAction.ShowTrackingProtectionCfrChange(false))
+        store.state.selectedTabId?.let {
+            fragment.components?.appStore?.dispatch(AppAction.ShowTrackingProtectionCfrChange(mapOf(it to false)))
+        }
         fragment.requireContext().settings.shouldShowCfrForTrackingProtection = false
     }
 
