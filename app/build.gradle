@@ -12,7 +12,7 @@ import com.android.build.OutputFile
 import groovy.json.JsonOutput
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
 
     if (project.hasProperty("testBuildType")) {
         // Allowing to configure the test build type via command line flag (./gradlew -PtestBuildType=beta ..)
@@ -23,10 +23,10 @@ android {
     defaultConfig {
         applicationId "org.mozilla"
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 32
         versionCode 11 // This versionCode is "frozen" for local builds. For "release" builds we
                        // override this with a generated versionCode at build time.
-        versionName "103.0"
+        versionName "104.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments clearPackageData: 'true'
 
@@ -267,6 +267,7 @@ dependencies {
     implementation "org.mozilla.components:lib-crash-sentry:${AndroidComponents.VERSION}"
     implementation "org.mozilla.components:lib-state:${AndroidComponents.VERSION}"
     implementation "org.mozilla.components:feature-media:${AndroidComponents.VERSION}"
+    implementation "org.mozilla.components:lib-auth:${AndroidComponents.VERSION}"
 
     implementation "org.mozilla.components:service-glean:${AndroidComponents.VERSION}", {
         exclude group: 'org.mozilla.telemetry', module: 'glean-native'
