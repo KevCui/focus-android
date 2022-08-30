@@ -79,7 +79,9 @@ locales = [
   "quy",
   "ro",
   "ru",
+  "si",
   "sk",
+  "skr",
   "sl",
   "sn",
   "sq",
@@ -101,7 +103,7 @@ locales = [
   "zam",
   "zh-CN",
   "zh-HK",
-  "zh-TW"
+  "zh-TW",
 ]
 
 # Expose the following branches to localization

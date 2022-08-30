@@ -73,7 +73,6 @@ import org.mozilla.focus.telemetry.TelemetryMiddleware
 import org.mozilla.focus.telemetry.startuptelemetry.AppStartReasonProvider
 import org.mozilla.focus.telemetry.startuptelemetry.StartupActivityLog
 import org.mozilla.focus.telemetry.startuptelemetry.StartupStateProvider
-import org.mozilla.focus.tips.TipManager
 import org.mozilla.focus.topsites.DefaultTopSitesStorage
 import org.mozilla.focus.utils.Settings
 import java.util.Locale
@@ -103,8 +102,6 @@ class Components(
 
     val settings by lazy { Settings(context) }
 
-    val tipManager by lazy { TipManager(context) }
-
     val engineDefaultSettings by lazy {
         DefaultSettings(
             requestInterceptor = AppContentInterceptor(context),
@@ -112,7 +109,8 @@ class Components(
             javascriptEnabled = !settings.shouldBlockJavaScript(),
             remoteDebuggingEnabled = settings.shouldEnableRemoteDebugging(),
             webFontsEnabled = !settings.shouldBlockWebFonts(),
-            httpsOnlyMode = settings.getHttpsOnlyMode()
+            httpsOnlyMode = settings.getHttpsOnlyMode(),
+            preferredColorScheme = settings.getPreferredColorScheme()
         )
     }
 
@@ -164,8 +162,6 @@ class Components(
             MediaSessionFeature(context, MediaSessionService::class.java, this).start()
         }
     }
-
-    val migrator by lazy { EngineProvider.provideTrackingProtectionMigrator(context) }
 
     /**
      * The [CustomTabsServiceStore] holds global custom tabs related data.
