@@ -12,7 +12,9 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -45,19 +47,17 @@ import org.mozilla.focus.ui.theme.focusColors
  * @param onRemoveTopSiteClicked Invoked when the user clicked 'Remove' item from drop down menu
  * @param onRenameTopSiteClicked Invoked when the user clicked 'Rename' item from drop down menu
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TopSites(
     topSites: List<TopSite>,
     onTopSiteClicked: (TopSite) -> Unit,
     onRemoveTopSiteClicked: (TopSite) -> Unit,
-    onRenameTopSiteClicked: (TopSite) -> Unit,
+    onRenameTopSiteClicked: (TopSite) -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .padding(horizontal = 10.dp)
-            .size(width = 324.dp, height = 84.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(28.dp),
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(72.dp),
+        contentPadding = PaddingValues(8.dp)
     ) {
         items(topSites.size) {
             index -> TopSiteItem (
