@@ -295,12 +295,11 @@
 
     <!-- Preference Title: Biometrics can be used to unlock Focus if the previous session's data was not erased by the user. -->
     <string name="preference_security_biometric">Uporabljaj prstni odtis za odklepanje aplikacije</string>
+
     <!-- Preference Summary: Biometrics (iris scan, fingerprint, or facial scan) can be used to unlock Focus if the app had a URL
         open when the app was last run to ensure that only the phone's owner can view a previous session.
         %s will be replaced by the app name (e.g. Firefox Focus)
         Shortcuts is a feature that allows the user to pin his favorite websites to Focus home screen so he can quickly access them-->
-    <string moz:removedIn="102" name="preference_security_biometric_summary" tools:ignore="UnusedResources">Če je v %1$su odprt spletni naslov, lahko aplikacijo odklenete s prstnim odtisom. Skrivni način bo vključen.</string>
-
     <string name="preference_security_biometric_summary2">Odklenite s prstnim odtisom, če ste dodali bližnjice ali če je spletno mesto že odprto v %s.</string>
 
     <!-- Preference Title: Secure Mode is a setting that prevents the app's content to show up in the "recent apps" screen
@@ -366,7 +365,7 @@
 
     <!-- Title: Homescreen tips settings toggle to determine whether or not tips are displayed when
      a user first launches the app. -->
-    <string name="preference_homescreen_tips">Prikazuj namige na začetnem zaslonu</string>
+    <string moz:removedIn="105" name="preference_homescreen_tips" tools:ignore="UnusedResources">Prikazuj namige na začetnem zaslonu</string>
 
     <!-- Clickable action text that shows when user long-presses on a search engine search field (this is similar to paste or copy when long-pressing a text field) -->
     <string name="action_option_add_search_engine">Dodaj iskalnik</string>
@@ -496,32 +495,58 @@
 
   <!-- Onboarding: Title -->
     <!-- %1$s will be replaced by the app name and build variant(e.g. Firefox Focus, Firefox Klar Nightly) -->
-    <string name="onboarding_title">Dobrodošli v %su!</string>
+    <string moz:removedIn="106" name="onboarding_title">Dobrodošli v %su!</string>
+
+    <!-- Content description (not visible, for screen readers etc.): This is the description for the close button from the new onboarding flow screen one and two -->
+    <string name="onboarding_close_button_content_description">Zapri</string>
+
+
+    <!-- New Onboarding flow first screen title -->
+    <!-- %1$s will be replaced by the app name and build variant(e.g. Firefox Focus, Firefox Klar Nightly) -->
+    <string name="onboarding_first_screen_title">Dobrodošli v %su</string>
+
+    <!-- New Onboarding flow first screen subtitle the one that appears under title -->
+    <string name="onboarding_first_screen_subtitle">Hitro. Zasebno. Brez motenj.</string>
+
+    <!-- New Onboarding flow first screen button label-->
+    <string name="onboarding_first_screen_button_text">Začnite</string>
+
+
+    <!-- Onboarding second screen: Title -->
+    <!-- %1$s will be replaced by the app short name(Focus) -->
+    <string name="onboarding_second_screen_title">%1$s ni kot drugi brskalniki</string>
+
+    <!-- New Onboarding flow second screen make Focus default browser button label-->
+    <string name="onboarding_second_screen_default_browser_button_text">Nastavi kot privzeti brskalnik</string>
+
+    <!-- New Onboarding flow second screen skip onboarding button label-->
+    <string name="onboarding_second_screen_skip_button_text">Preskoči</string>
+
 
     <!-- Onboarding: Description -->
-    <string name="onboarding_description">Zasebno brskanje na višjem nivoju, kadar ga želite</string>
+    <string moz:removedIn="106" name="onboarding_description">Zasebno brskanje na višjem nivoju, kadar ga želite</string>
 
     <!-- Onboarding: Incognito Title -->
-    <string name="onboarding_incognito_title">Kjer inkognito sreča nevidno</string>
+    <string moz:removedIn="106" name="onboarding_incognito_title">Kjer inkognito sreča nevidno</string>
 
     <!-- Onboarding: Incognito Description -->
     <!-- Text %s will be replaced with the name of the app (e.g. Focus, Klar) -->
-    <string name="onboarding_incognito_description">%s je brskalnik, ki zasebnost postavlja na prvo mesto. Izredno zmogljiva zaščita pred sledenjem in piškotki je vgrajena.</string>
+    <string moz:removedIn="106" name="onboarding_incognito_description">%s je brskalnik, ki zasebnost postavlja na prvo mesto. Izredno zmogljiva zaščita pred sledenjem in piškotki je vgrajena.</string>
 
     <!-- Onboarding: History Title -->
-    <string name="onboarding_history_title">Brskajte, kot da se nikoli ni zgodilo</string>
+    <string moz:removedIn="106" name="onboarding_history_title">Brskajte, kot da se nikoli ni zgodilo</string>
 
     <!-- Onboarding: History Description -->
-    <string name="onboarding_history_description2">Z enim dotikom izbrišete zgodovino brskanja in piškotke – ter preprečite, da bi vam oglasi sledili.</string>
+    <string moz:removedIn="106" name="onboarding_history_description2">Z enim dotikom izbrišete zgodovino brskanja in piškotke – ter preprečite, da bi vam oglasi sledili.</string>
 
     <!-- Onboarding: Protection Title -->
-    <string name="onboarding_protection_title">Zasebnost, ki ustreza vsaki situaciji</string>
+    <string moz:removedIn="106" name="onboarding_protection_title">Zasebnost, ki ustreza vsaki situaciji</string>
 
     <!-- Onboarding: Protection Description -->
-    <string name="onboarding_protection_description">Če želite spremeniti brskanje, lahko v nastavitvah zahtevate več ali manj zasebnosti.</string>
+    <string moz:removedIn="106" name="onboarding_protection_description">Če želite spremeniti brskanje, lahko v nastavitvah zahtevate več ali manj zasebnosti.</string>
 
     <!-- Onboarding: Start browsing -->
-    <string name="onboarding_start_browsing">Začnite z brskanjem</string>
+    <string moz:removedIn="106" name="onboarding_start_browsing">Začnite z brskanjem</string>
 
     <!-- First run tour (Default browser): Title -->
     <string name="firstrun_defaultbrowser_title">Okrepite svojo zasebnost</string>
@@ -819,7 +844,7 @@
 
     <!-- Tip displayed on home view explaining how to disable enhanced tracking protection
 The new line here must be kept as the second half of the string is clickable for the user. -->
-    <string name="tip_disable_tracking_protection3">Ali na strani manjka vsebina ali se čudno obnaša?\n
+    <string moz:removedIn="105" name="tip_disable_tracking_protection3" tools:ignore="UnusedResources">Ali na strani manjka vsebina ali se čudno obnaša?\n
     Poskusite izklopiti izboljšano zaščito pred sledenjem</string>
 
     <!-- Tip displayed on home view explaining how to add sites to homescreen
@@ -841,7 +866,7 @@ The new line here must be kept as the second half of the string is clickable for
 
     <!-- Tip displayed on home view explaining how to request the desktop version of a website.
       %1$s is a placeholder for the app name. -->
-    <string name="tip_request_desktop2">Si želite ogledati polno različico strani?\n
+    <string moz:removedIn="105" name="tip_request_desktop2" tools:ignore="UnusedResources">Si želite ogledati polno različico strani?\n
         Preklopite na stran za namizja v meniju %1$s</string>
 
     <!-- Tip displayed on home view explaining how to add a custom autocomplete URL -->
@@ -849,17 +874,17 @@ The new line here must be kept as the second half of the string is clickable for
 
     <!-- Tip displayed on the home view explaining how to use the Allowlist feature.
      "Allowlist" is a replacement for the word whitelist. -->
-    <string name="tip_explain_allowlist3">Želite obdržati zaščito pred sledenjem izključeno za spletno mesto, ki mu zaupate?\n
+    <string moz:removedIn="105" name="tip_explain_allowlist3" tools:ignore="UnusedResources">Želite obdržati zaščito pred sledenjem izključeno za spletno mesto, ki mu zaupate?\n
         Dodajte ga na seznam dovoljenih v nastavitvah
     </string>
 
     <!-- Tip displayed on the home view about the changes in the new release.
     %1$s is a placeholder for the app name -->
-    <string name="tip_fresh_look">Da, imamo nov svež videz!\n Preberite več o tej in drugih posodobitvah brskalnika %1$s.</string>
+    <string moz:removedIn="105" name="tip_fresh_look" tools:ignore="UnusedResources">Da, imamo nov svež videz!\n Preberite več o tej in drugih posodobitvah brskalnika %1$s.</string>
 
     <!-- Tip displayed on the home view about shortcuts
     %1$s is a placeholder for the app name -->
-    <string name="tip_about_shortcuts">Ustvarite si bližnjice do strani, ki jih največkrat obiščete:\n
+    <string moz:removedIn="105" name="tip_about_shortcuts" tools:ignore="UnusedResources">Ustvarite si bližnjice do strani, ki jih največkrat obiščete:\n
     V meniju %1$s izberite Dodaj med bližnjice</string>
 
     <!-- Label for the snackbar when a user opens a new tab -->
@@ -982,7 +1007,10 @@ The new line here must be kept as the second half of the string is clickable for
 
     <!-- Contextual Feature Recommendation Popups -->
     <!-- CFR for Toolbar Shield Icon (Banner Info Message) -->
-    <string name="cfr_for_toolbar_shield_icon">Videti je, da vam je to spletno mesto poskušalo slediti. Kliknite ščit za nastavitve spletnega mesta in statistiko zavračanja sledilcev.</string>
+    <string moz:removedIn="104" name="cfr_for_toolbar_shield_icon">Videti je, da vam je to spletno mesto poskušalo slediti. Kliknite ščit za nastavitve spletnega mesta in statistiko zavračanja sledilcev.</string>
+
+    <string name="cfr_for_toolbar_shield_icon2">Imamo jih! Temu spletnemu mestu smo preprečili vohunjenje za vami. Če želite videti, kaj blokiramo, tapnite ščit.</string>
+
     <!-- Content description (not visible, for screen readers etc.): Button that closes the CFR popup -->
     <string name="cfr_close_button_description">Zapri pojavno okno</string>
 
@@ -995,6 +1023,27 @@ The new line here must be kept as the second half of the string is clickable for
     <string name="tool_tip_dismiss_button_content_description">Zapri</string>
 
     <!-- CFR for Toolbar Delete Icon (Banner Info Message) -->
-    <string name="cfr_for_toolbar_delete_icon">Znebite se svojih osebnih podatkov, zgodovine brskanja in drugih podatkov te seje z dotikom gumba za smeti. Poskusite!</string>
+    <string moz:removedIn="105" name="cfr_for_toolbar_delete_icon" tools:ignore="UnusedResources">Znebite se svojih osebnih podatkov, zgodovine brskanja in drugih podatkov te seje z dotikom gumba za smeti. Poskusite!</string>
+    <string name="cfr_for_toolbar_delete_icon2">Tapnite tukaj, da vse vržete v smeti – zgodovino, piškotke, vse – in začnete na novo v novem zavihku.</string>
 
+    <!-- Promote SearchWidget Dialog -->
+
+    !-- Content description (not visible, for screen readers etc.): This is the description for
+    picture of search widget from promote search widget dialog. --&gt;
+    <string name="promote_search_widget_dialog_content_description">Zapri</string>
+
+    !-- Content description (not visible, for screen readers etc.): This is the description for
+    picture of search widget from promote search widget dialog. --&gt;
+    <string name="promote_search_widget_dialog_picture_content_description">Pripomoček za iskanje</string>
+
+    !-- This is the title of promote search widget dialog. --&gt;
+    <string name="promote_search_widget_dialog_title">Zgodovina brskanja izbrisana! 🎉</string>
+
+    !-- This is the subtitle of promote search widget dialog. %1$s will get replaced with the name
+    of the app (e.g. &quot;Focus&quot;) --&gt;
+    <string name="promote_search_widget_button_text">Dodaj pripomoček na začetni zaslon</string>
+
+    !-- This is te text of the snackbar that appears after the search widget was added successfully
+    to the home screen. --&gt;
+    <string name="promote_search_widget_snackbar_message">Pripomoček dodan na začetni zaslon</string>
 </resources>

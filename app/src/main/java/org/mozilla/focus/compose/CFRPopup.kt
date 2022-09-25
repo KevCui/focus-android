@@ -50,7 +50,8 @@ import androidx.compose.ui.window.PopupProperties
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewTreeLifecycleOwner
-import androidx.savedstate.ViewTreeSavedStateRegistryOwner
+import androidx.savedstate.findViewTreeSavedStateRegistryOwner
+import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import mozilla.components.support.ktx.android.util.dpToPx
 import org.mozilla.focus.R
 import org.mozilla.focus.R.color
@@ -83,7 +84,7 @@ internal value class Pixels(val value: Int)
  */
 internal data class PopupHorizontalBounds(
     val startCoord: Pixels,
-    val endCoord: Pixels
+    val endCoord: Pixels,
 )
 
 /**
@@ -109,7 +110,7 @@ data class CFRPopupProperties(
     val overlapAnchor: Boolean = false,
     val indicatorArrowStartOffset: Dp = 30.dp,
     val indicatorArrowHeight: Dp = 10.dp,
-    val elevation: Dp = 10.dp
+    val elevation: Dp = 10.dp,
 )
 
 /**
@@ -126,7 +127,7 @@ class CFRPopup(
     private val text: String,
     private val anchor: View,
     private val properties: CFRPopupProperties = CFRPopupProperties(),
-    private val onDismiss: () -> Unit = {}
+    private val onDismiss: () -> Unit = {},
 ) {
     // This is just a facade for CFRPopupFullScreenLayout to offer a cleaner API.
 
@@ -139,6 +140,7 @@ class CFRPopup(
         anchor.post {
             CFRPopupFullScreenLayout(container, anchor, text, properties, onDismiss).apply {
                 this.show()
+                isTransitionGroup = true
             }
         }
     }
@@ -149,14 +151,15 @@ class CFRPopup(
  * a [Composable] based popup anywhere on the screen.
  */
 @OptIn(ExperimentalComposeUiApi::class)
-@SuppressLint("ViewConstructor") // Intended to be used only in code, don't need a View constructor
+@SuppressLint("ViewConstructor")
+// Intended to be used only in code, don't need a View constructor
 @VisibleForTesting
 internal class CFRPopupFullScreenLayout(
     private val container: View,
     private val anchor: View,
     private val text: String,
     private val properties: CFRPopupProperties,
-    private val onDismiss: () -> Unit
+    private val onDismiss: () -> Unit,
 ) : AbstractComposeView(container.context), ViewRootForInspector {
     private val windowManager =
         container.context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -188,7 +191,7 @@ internal class CFRPopupFullScreenLayout(
 
     init {
         ViewTreeLifecycleOwner.set(this, ViewTreeLifecycleOwner.get(container))
-        ViewTreeSavedStateRegistryOwner.set(this, ViewTreeSavedStateRegistryOwner.get(container))
+        this.setViewTreeSavedStateRegistryOwner(container.findViewTreeSavedStateRegistryOwner())
         GeckoScreenOrientation.getInstance().addListener(orientationChangeListener)
         anchor.addOnAttachStateChangeListener(anchorDetachedListener)
     }
@@ -220,9 +223,9 @@ internal class CFRPopupFullScreenLayout(
             popupStartCoord = popupBounds.startCoord,
             arrowIndicatorWidth = Pixels(
                 CFRPopupShape.getIndicatorBaseWidthForHeight(
-                    properties.indicatorArrowHeight.toPx()
-                )
-            )
+                    properties.indicatorArrowHeight.toPx(),
+                ),
+            ),
         )
 
         Popup(
@@ -231,7 +234,7 @@ internal class CFRPopupFullScreenLayout(
                     anchorBounds: IntRect,
                     windowSize: IntSize,
                     layoutDirection: LayoutDirection,
-                    popupContentSize: IntSize
+                    popupContentSize: IntSize,
                 ): IntOffset {
                     // Popup will be anchored such that the indicator arrow will point to the middle of the anchor View
                     // but the popup is allowed some space as start padding in which it can be displayed such that
@@ -245,7 +248,7 @@ internal class CFRPopupFullScreenLayout(
                         when (properties.overlapAnchor) {
                             true -> anchorLocation.last() + anchor.height / 2
                             else -> anchorLocation.last() + anchor.height
-                        }
+                        },
                     )
                 }
             },
@@ -258,7 +261,7 @@ internal class CFRPopupFullScreenLayout(
                 // For when tapping outside the popup or on the back button.
                 dismiss()
                 onDismiss()
-            }
+            },
         ) {
             CFRPopupContent(
                 text = text,
@@ -271,7 +274,7 @@ internal class CFRPopupFullScreenLayout(
                     // For when tapping the "X" button.
                     dismiss()
                     onDismiss()
-                }
+                },
             )
         }
     }
@@ -288,7 +291,7 @@ internal class CFRPopupFullScreenLayout(
     @VisibleForTesting
     internal fun computePopupHorizontalBounds(
         anchorMiddleXCoord: Pixels,
-        arrowIndicatorWidth: Pixels
+        arrowIndicatorWidth: Pixels,
     ): PopupHorizontalBounds {
         val arrowIndicatorHalfWidth = arrowIndicatorWidth.value / 2
 
@@ -298,14 +301,14 @@ internal class CFRPopupFullScreenLayout(
                 (anchorMiddleXCoord.value - arrowIndicatorHalfWidth)
                     .minus(properties.indicatorArrowStartOffset.toPx())
                     .minus(HORIZONTAL_PADDING.dp.toPx())
-                    .coerceAtLeast(getLeftInsets())
+                    .coerceAtLeast(getLeftInsets()),
             )
 
             return PopupHorizontalBounds(
                 startCoord = startCoord,
                 endCoord = Pixels(
-                    startCoord.value + POPUP_WIDTH_DP.dp.toPx() + HORIZONTAL_PADDING.dp.toPx() * 2
-                )
+                    startCoord.value + POPUP_WIDTH_DP.dp.toPx() + HORIZONTAL_PADDING.dp.toPx() * 2,
+                ),
             )
         } else {
             val startCoord = Pixels(
@@ -319,14 +322,14 @@ internal class CFRPopupFullScreenLayout(
                             LocalConfiguration.current.screenWidthDp.dp.toPx()
                         }
                             .roundToInt()
-                            .plus(getLeftInsets())
-                    )
+                            .plus(getLeftInsets()),
+                    ),
             )
             return PopupHorizontalBounds(
                 startCoord = startCoord,
                 endCoord = Pixels(
-                    startCoord.value - POPUP_WIDTH_DP.dp.toPx() - HORIZONTAL_PADDING.dp.toPx() * 2
-                )
+                    startCoord.value - POPUP_WIDTH_DP.dp.toPx() - HORIZONTAL_PADDING.dp.toPx() * 2,
+                ),
             )
         }
     }
@@ -343,7 +346,7 @@ internal class CFRPopupFullScreenLayout(
     private fun computeIndicatorArrowStartCoord(
         anchorMiddleXCoord: Pixels,
         popupStartCoord: Pixels,
-        arrowIndicatorWidth: Pixels
+        arrowIndicatorWidth: Pixels,
     ): Pixels {
         val arrowIndicatorHalfWidth = arrowIndicatorWidth.value / 2
 
@@ -370,7 +373,7 @@ internal class CFRPopupFullScreenLayout(
         GeckoScreenOrientation.getInstance().removeListener(orientationChangeListener)
         disposeComposition()
         ViewTreeLifecycleOwner.set(this, null)
-        ViewTreeSavedStateRegistryOwner.set(this, null)
+        this.setViewTreeSavedStateRegistryOwner(null)
         windowManager.removeViewImmediate(this)
     }
 
@@ -410,11 +413,11 @@ internal class CFRPopupFullScreenLayout(
  * [View.OnAttachStateChangeListener.onViewDetachedFromWindow].
  */
 private class OnViewDetachedListener(val onDismiss: () -> Unit) : View.OnAttachStateChangeListener {
-    override fun onViewAttachedToWindow(v: View?) {
+    override fun onViewAttachedToWindow(v: View) {
         // no-op
     }
 
-    override fun onViewDetachedFromWindow(v: View?) {
+    override fun onViewDetachedFromWindow(v: View) {
         onDismiss()
     }
 }
@@ -438,7 +441,7 @@ private fun CFRPopupContent(
     indicatorArrowStartOffset: Dp,
     indicatorArrowHeight: Dp,
     elevation: Dp = 0.dp,
-    onDismissButton: () -> Unit
+    onDismissButton: () -> Unit,
 ) {
     FocusTheme {
         Box(modifier = Modifier.width(POPUP_WIDTH_DP.dp + HORIZONTAL_PADDING.dp * 2)) {
@@ -454,14 +457,14 @@ private fun CFRPopupContent(
                         brush = Brush.linearGradient(
                             colors = listOf(
                                 colorResource(color.cfr_pop_up_shape_end_color),
-                                colorResource(color.cfr_pop_up_shape_start_color)
+                                colorResource(color.cfr_pop_up_shape_start_color),
                             ),
                             end = Offset(0f, Float.POSITIVE_INFINITY),
-                            start = Offset(Float.POSITIVE_INFINITY, 0f)
-                        )
+                            start = Offset(Float.POSITIVE_INFINITY, 0f),
+                        ),
                     )
                     .wrapContentHeight()
-                    .width(POPUP_WIDTH_DP.dp)
+                    .width(POPUP_WIDTH_DP.dp),
             ) {
                 Text(
                     text = text,
@@ -474,8 +477,8 @@ private fun CFRPopupContent(
                             start = 16.dp,
                             top = 16.dp + indicatorArrowHeight,
                             end = 33.dp,
-                            bottom = 16.dp
-                        )
+                            bottom = 16.dp,
+                        ),
                 )
             }
 
@@ -484,13 +487,13 @@ private fun CFRPopupContent(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(top = 6.dp, end = 6.dp)
-                    .size(48.dp)
+                    .size(48.dp),
             ) {
                 Icon(
                     Icons.Filled.Close,
                     contentDescription = stringResource(id = R.string.cfr_close_button_description),
                     modifier = Modifier.size(22.dp),
-                    tint = colorResource(color.cardview_light_background)
+                    tint = colorResource(color.cardview_light_background),
                 )
             }
         }
@@ -506,7 +509,7 @@ private fun CFRPopupPreview() {
             indicatorArrowStartOffset = 10.dp,
             indicatorArrowHeight = 15.dp,
             elevation = 30.dp,
-            onDismissButton = { }
+            onDismissButton = { },
         )
     }
 }

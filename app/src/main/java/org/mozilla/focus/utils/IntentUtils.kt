@@ -10,6 +10,7 @@ import android.content.Intent
 import android.content.pm.LabeledIntent
 import android.os.Build
 import android.os.Parcelable
+import org.mozilla.focus.ext.queryIntentActivitiesCompat
 
 object IntentUtils {
 
@@ -31,10 +32,10 @@ object IntentUtils {
     fun getIntentChooser(
         context: Context,
         intent: Intent,
-        chooserTitle: CharSequence? = null
+        chooserTitle: CharSequence? = null,
     ): Intent {
         val chooserIntent: Intent
-        val resolveInfos = context.packageManager.queryIntentActivities(intent, 0).toHashSet()
+        val resolveInfos = context.packageManager.queryIntentActivitiesCompat(intent, 0).toHashSet()
 
         val excludedComponentNames = resolveInfos
             .map { it.activityInfo }
@@ -58,7 +59,7 @@ object IntentUtils {
                         targetIntent,
                         activityInfo.packageName,
                         resolveInfo.labelRes,
-                        resolveInfo.icon
+                        resolveInfo.icon,
                     )
                 }
 
@@ -73,7 +74,7 @@ object IntentUtils {
             }
             chooserIntent.putExtra(
                 Intent.EXTRA_INITIAL_INTENTS,
-                targetIntents.toTypedArray<Parcelable>()
+                targetIntents.toTypedArray<Parcelable>(),
             )
         }
         return chooserIntent

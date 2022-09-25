@@ -294,12 +294,11 @@
 
     <!-- Preference Title: Biometrics can be used to unlock Focus if the previous session's data was not erased by the user. -->
     <string name="preference_security_biometric">Қолданбаны босату үшін саусақ баспасын қолдану</string>
+
     <!-- Preference Summary: Biometrics (iris scan, fingerprint, or facial scan) can be used to unlock Focus if the app had a URL
         open when the app was last run to ensure that only the phone's owner can view a previous session.
         %s will be replaced by the app name (e.g. Firefox Focus)
         Shortcuts is a feature that allows the user to pin his favorite websites to Focus home screen so he can quickly access them-->
-    <string moz:removedIn="102" name="preference_security_biometric_summary" tools:ignore="UnusedResources">Сіздің саусақ баспаңыз URL сілтемеде ашық болған кезде %1$s босата алады. Тыңшы іске қосылатын болады.</string>
-
     <string name="preference_security_biometric_summary2">Жарлықтарды қосқан болсаңыз немесе веб-сайт %s ішінде қазір ашық болса, саусақ ізі арқылы құлыпты ашыңыз.</string>
 
     <!-- Preference Title: Secure Mode is a setting that prevents the app's content to show up in the "recent apps" screen
@@ -364,7 +363,7 @@
 
     <!-- Title: Homescreen tips settings toggle to determine whether or not tips are displayed when
      a user first launches the app. -->
-    <string name="preference_homescreen_tips">Үй парағында кеңестерді көрсету</string>
+    <string moz:removedIn="105" name="preference_homescreen_tips" tools:ignore="UnusedResources">Үй парағында кеңестерді көрсету</string>
 
     <!-- Clickable action text that shows when user long-presses on a search engine search field (this is similar to paste or copy when long-pressing a text field) -->
     <string name="action_option_add_search_engine">Іздеу жүйесін қосу</string>
@@ -494,34 +493,63 @@
 
   <!-- Onboarding: Title -->
     <!-- %1$s will be replaced by the app name and build variant(e.g. Firefox Focus, Firefox Klar Nightly) -->
-    <string name="onboarding_title">%1$s өніміне қош келдіңіз!</string>
+    <string moz:removedIn="106" name="onboarding_title">%1$s өніміне қош келдіңіз!</string>
+
+    <!-- Content description (not visible, for screen readers etc.): This is the description for the close button from the new onboarding flow screen one and two -->
+    <string name="onboarding_close_button_content_description">Жабу</string>
+
+    <!-- New Onboarding flow first screen title -->
+    <!-- %1$s will be replaced by the app name and build variant(e.g. Firefox Focus, Firefox Klar Nightly) -->
+    <string name="onboarding_first_screen_title">%1$s өніміне қош келдіңіз</string>
+
+    <!-- New Onboarding flow first screen subtitle the one that appears under title -->
+    <string name="onboarding_first_screen_subtitle">Жылдам. Жеке. Ешқандай алаңдаушылығы жоқ.</string>
+
+    <!-- New Onboarding flow first screen button label-->
+    <string name="onboarding_first_screen_button_text">Бастау</string>
+
+    <!-- Onboarding second screen: Title -->
+    <!-- %1$s will be replaced by the app short name(Focus) -->
+    <string name="onboarding_second_screen_title">%1$s басқа браузерлер сияқты емес</string>
+
+    <!-- New Onboarding flow second screen subtitle the one that appears under title -->
+    <string name="onboarding_second_screen_subtitle_one">Қосымша жекелік үшін сіз қолданбаны жапқан кезде тарихыңызды тазартамыз.</string>
+
+    <!-- New Onboarding flow second screen subtitle two the one that appears under subtitle one -->
+    <!-- %1$s will be replaced by the app short name(Focus) -->
+    <string name="onboarding_second_screen_subtitle_two">Әрбір ашылған сілтеме кезінде деректеріңізді қорғау үшін %1$s өнімін негізгі етіп орнатыңыз.</string>
+
+    <!-- New Onboarding flow second screen make Focus default browser button label-->
+    <string name="onboarding_second_screen_default_browser_button_text">Негізгі браузер қылу</string>
+
+    <!-- New Onboarding flow second screen skip onboarding button label-->
+    <string name="onboarding_second_screen_skip_button_text">Аттап кету</string>
+
 
     <!-- Onboarding: Description -->
-    <string name="onboarding_description">Қажет кезде келесі деңгейлі жекелік шолу</string>
+    <string moz:removedIn="106" name="onboarding_description">Қажет кезде келесі деңгейлі жекелік шолу</string>
 
     <!-- Onboarding: Incognito Title -->
-    <string name="onboarding_incognito_title">Инкогнито мен жасырын режимдер біріккенде</string>
+    <string moz:removedIn="106" name="onboarding_incognito_title">Инкогнито мен жасырын режимдер біріккенде</string>
 
     <!-- Onboarding: Incognito Description -->
     <!-- Text %s will be replaced with the name of the app (e.g. Focus, Klar) -->
-    <string name="onboarding_incognito_description">%s - жекелікті алға қоятын браузер, оның бақылаудан және cookie файлдарынан өте мықты қорғанысы бар.</string>
+    <string moz:removedIn="106" name="onboarding_incognito_description">%s - жекелікті алға қоятын браузер, оның бақылаудан және cookie файлдарынан өте мықты қорғанысы бар.</string>
 
     <!-- Onboarding: History Title -->
-    <string name="onboarding_history_title">Интернетті көрінбейтіндей шолыңыз</string>
+    <string moz:removedIn="106" name="onboarding_history_title">Интернетті көрінбейтіндей шолыңыз</string>
 
     <!-- Onboarding: History Description -->
-    <string moz:removedIn="100" name="onboarding_history_description" tools:ignore="UnusedResources">Бір шерту сіздің шолу тарихын және cookie файлдарын өшіреді — және жарнамаға сіздің соңыныздан еруден жол бермейді.</string>
-
-    <string name="onboarding_history_description2">Бір шерту сіздің шолу тарихын және cookie файлдарын өшіреді — және жарнамаға сіздің соңыныздан еруден жол бермейді.</string>
+    <string moz:removedIn="106" name="onboarding_history_description2">Бір шерту сіздің шолу тарихын және cookie файлдарын өшіреді — және жарнамаға сіздің соңыныздан еруден жол бермейді.</string>
 
     <!-- Onboarding: Protection Title -->
-    <string name="onboarding_protection_title">Кез келген жағдайға сәйкес келетін жекелік</string>
+    <string moz:removedIn="106" name="onboarding_protection_title">Кез келген жағдайға сәйкес келетін жекелік</string>
 
     <!-- Onboarding: Protection Description -->
-    <string name="onboarding_protection_description">Шолуды өзгерту қажет болса, жекелік баптауларын арттыру немесе кішірейту оңай.</string>
+    <string moz:removedIn="106" name="onboarding_protection_description">Шолуды өзгерту қажет болса, жекелік баптауларын арттыру немесе кішірейту оңай.</string>
 
     <!-- Onboarding: Start browsing -->
-    <string name="onboarding_start_browsing">Шолуды бастау</string>
+    <string moz:removedIn="106" name="onboarding_start_browsing">Шолуды бастау</string>
 
     <!-- First run tour (Default browser): Title -->
     <string name="firstrun_defaultbrowser_title">Жекелігіңізді күшейтіңіз</string>
@@ -817,7 +845,7 @@
 
     <!-- Tip displayed on home view explaining how to disable enhanced tracking protection
 The new line here must be kept as the second half of the string is clickable for the user. -->
-    <string name="tip_disable_tracking_protection3">Сайтта мазмұн жоқ па немесе оның әрекеттері біртүрлі ма?\n
+    <string moz:removedIn="105" name="tip_disable_tracking_protection3" tools:ignore="UnusedResources">Сайтта мазмұн жоқ па немесе оның әрекеттері біртүрлі ма?\n
     Бақылаудан жақсартылған қорғанысты өшіріп көріңіз</string>
 
     <!-- Tip displayed on home view explaining how to add sites to homescreen
@@ -839,7 +867,7 @@ The new line here must be kept as the second half of the string is clickable for
 
     <!-- Tip displayed on home view explaining how to request the desktop version of a website.
       %1$s is a placeholder for the app name. -->
-    <string name="tip_request_desktop2">Сайттың толық нұсқасын көргіңіз келе ме?\n
+    <string moz:removedIn="105" name="tip_request_desktop2" tools:ignore="UnusedResources">Сайттың толық нұсқасын көргіңіз келе ме?\n
         %1$s мәзірінен жұмыс үстелі нұсқасын іске қосыңыз</string>
 
     <!-- Tip displayed on home view explaining how to add a custom autocomplete URL -->
@@ -847,17 +875,17 @@ The new line here must be kept as the second half of the string is clickable for
 
     <!-- Tip displayed on the home view explaining how to use the Allowlist feature.
      "Allowlist" is a replacement for the word whitelist. -->
-    <string name="tip_explain_allowlist3">Сенімді сайт үшін Бақылаудан жақсартылған қорғанысты өшіргіңіз келе ме?\n
+    <string moz:removedIn="105" name="tip_explain_allowlist3" tools:ignore="UnusedResources">Сенімді сайт үшін Бақылаудан жақсартылған қорғанысты өшіргіңіз келе ме?\n
         Оны «Баптаулар» бөлімінде рұқсат тізіміне қосыңыз
     </string>
 
     <!-- Tip displayed on the home view about the changes in the new release.
     %1$s is a placeholder for the app name -->
-    <string name="tip_fresh_look">Неге жоқ, бізде жаңа көрініс бар! Ол және басқа да %1$s жаңартулары туралы көбірек біліңіз.</string>
+    <string moz:removedIn="105" name="tip_fresh_look" tools:ignore="UnusedResources">Неге жоқ, бізде жаңа көрініс бар! Ол және басқа да %1$s жаңартулары туралы көбірек біліңіз.</string>
 
     <!-- Tip displayed on the home view about shortcuts
     %1$s is a placeholder for the app name -->
-    <string name="tip_about_shortcuts">Сіз жиі шолатын сайттарға сілтемелер жасаңыз:\n
+    <string moz:removedIn="105" name="tip_about_shortcuts" tools:ignore="UnusedResources">Сіз жиі шолатын сайттарға сілтемелер жасаңыз:\n
     %1$s мәзірінен Жарлықтарға қосу командасын таңдаңыз</string>
 
     <!-- Label for the snackbar when a user opens a new tab -->
@@ -978,7 +1006,9 @@ The new line here must be kept as the second half of the string is clickable for
 
     <!-- Contextual Feature Recommendation Popups -->
     <!-- CFR for Toolbar Shield Icon (Banner Info Message) -->
-    <string name="cfr_for_toolbar_shield_icon">Бұл сайт сізді бақылауға тырысқан сияқты. Сайт параметрлері мен трекерлерді блоктау статистикасы үшін қалқанды басыңыз.</string>
+    <string moz:removedIn="104" name="cfr_for_toolbar_shield_icon">Бұл сайт сізді бақылауға тырысқан сияқты. Сайт параметрлері мен трекерлерді блоктау статистикасы үшін қалқанды басыңыз.</string>
+    <string name="cfr_for_toolbar_shield_icon2">Ұстадық! Біз бұл сайттың сізге тыңшылық жасауын тоқтаттық. Біз блоктаған нәрселер туралы ақпарат алу үшін қалқанды шертіңіз.</string>
+
     <!-- Content description (not visible, for screen readers etc.): Button that closes the CFR popup -->
     <string name="cfr_close_button_description">Қалқымалы терезені жабу</string>
 
@@ -991,6 +1021,31 @@ The new line here must be kept as the second half of the string is clickable for
     <string name="tool_tip_dismiss_button_content_description">Тайдыру</string>
 
     <!-- CFR for Toolbar Delete Icon (Banner Info Message) -->
-    <string name="cfr_for_toolbar_delete_icon">Қоқыс шелегі батырмасына басу арқылы осы сеанстағы жеке деректеріңізден, шолу журналынан және т.б. құтылыңыз. Қолданып көріңіз!</string>
+    <string moz:removedIn="105" name="cfr_for_toolbar_delete_icon" tools:ignore="UnusedResources">Қоқыс шелегі батырмасына басу арқылы осы сеанстағы жеке деректеріңізден, шолу журналынан және т.б. құтылыңыз. Қолданып көріңіз!</string>
+    <string name="cfr_for_toolbar_delete_icon2">Барлығын қоқысқа тастау үшін осында шертіңіз — тарих, cookie файлдары, барлығы — және жаңа беттен жаңадан бастаңыз.</string>
 
+    <!-- Promote SearchWidget Dialog -->
+
+    !-- Content description (not visible, for screen readers etc.): This is the description for the
+    close button from promote search widget dialog. --&gt;
+    <string name="promote_search_widget_dialog_content_description">Жабу</string>
+
+    !-- Content description (not visible, for screen readers etc.): This is the description for
+    picture of search widget from promote search widget dialog. --&gt;
+    <string name="promote_search_widget_dialog_picture_content_description">Іздеу виджеті</string>
+
+    !-- This is the title of promote search widget dialog. --&gt;
+    <string name="promote_search_widget_dialog_title">Шолу тарихы тазартылды! 🎉</string>
+
+    !-- This is the subtitle of promote search widget dialog. %1$s will get replaced with the name
+    of the app (e.g. &quot;Focus&quot;) --&gt;
+    <string name="promote_search_widget_dialog_subtitle">Біз сізді жеке шолуға қалдырамыз, бірақ келесі жолы негізгі экрандағы %1$s виджетімен жылдамырақ бастауға болады.</string>
+
+    !-- This is te text from add search widget to home screen button .The button is located on
+    promote search widget dialog. --&gt;
+    <string name="promote_search_widget_button_text">Виджетті үй экранына қосу</string>
+
+    !-- This is te text of the snackbar that appears after the search widget was added successfully
+    to the home screen. --&gt;
+    <string name="promote_search_widget_snackbar_message">Виджетті үй экранына қосылды</string>
 </resources>

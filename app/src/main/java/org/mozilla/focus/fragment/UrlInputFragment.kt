@@ -32,6 +32,7 @@ import mozilla.components.support.ktx.android.view.hideKeyboard
 import mozilla.components.support.utils.ThreadUtils
 import org.mozilla.focus.GleanMetrics.BrowserSearch
 import org.mozilla.focus.GleanMetrics.SearchBar
+import org.mozilla.focus.GleanMetrics.SearchWidget
 import org.mozilla.focus.R
 import org.mozilla.focus.activity.MainActivity
 import org.mozilla.focus.databinding.FragmentUrlinputBinding
@@ -93,7 +94,7 @@ class UrlInputFragment :
 
         @JvmStatic
         fun createWithTab(
-            tabId: String
+            tabId: String,
         ): UrlInputFragment {
             val arguments = Bundle()
 
@@ -143,14 +144,15 @@ class UrlInputFragment :
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        searchSuggestionsViewModel = ViewModelProvider(this).get(SearchSuggestionsViewModel::class.java)
+        searchSuggestionsViewModel =
+            ViewModelProvider(this).get(SearchSuggestionsViewModel::class.java)
 
         childFragmentManager.beginTransaction()
             .replace(binding.searchViewContainer.id, SearchSuggestionsFragment.create())
             .commit()
 
         searchSuggestionsViewModel.selectedSearchSuggestion.observe(
-            viewLifecycleOwner
+            viewLifecycleOwner,
         ) {
             val isSuggestion = searchSuggestionsViewModel.searchQuery.value != it
             it?.let {
@@ -195,6 +197,15 @@ class UrlInputFragment :
             binding.browserToolbar.editMode()
             isInitialized = true
         }
+
+        if (
+            requireComponents.settings.searchWidgetInstalled &&
+            requireComponents.appStore.state.showSearchWidgetSnackbar
+        ) {
+            ViewUtils.showBrandedSnackbar(view, R.string.promote_search_widget_snackbar_message, 0)
+            SearchWidget.widgetWasAdded.record(mozilla.telemetry.glean.private.NoExtras())
+            requireComponents.appStore.dispatch(AppAction.ShowSearchWidgetSnackBar(false))
+        }
     }
 
     override fun onPause() {
@@ -216,7 +227,8 @@ class UrlInputFragment :
         val topMargin = (inputHeight + statusBarHeight).toInt()
 
         if (binding.searchViewContainer.layoutParams is ViewGroup.MarginLayoutParams) {
-            val marginParams = binding.searchViewContainer.layoutParams as ViewGroup.MarginLayoutParams
+            val marginParams =
+                binding.searchViewContainer.layoutParams as ViewGroup.MarginLayoutParams
             marginParams.topMargin = topMargin
         }
 
@@ -229,7 +241,7 @@ class UrlInputFragment :
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentUrlinputBinding.inflate(inflater, container, false)
 
@@ -238,7 +250,6 @@ class UrlInputFragment :
                 TopSitesOverlay()
             }
         }
-
         return binding.root
     }
 
@@ -251,10 +262,10 @@ class UrlInputFragment :
                 binding.browserToolbar,
                 fragment = this,
                 shippedDomainsProvider = shippedDomainsProvider,
-                customDomainsProvider = customDomainsProvider
+                customDomainsProvider = customDomainsProvider,
             ),
             owner = this,
-            view = binding.browserToolbar
+            view = binding.browserToolbar,
         )
 
         topSitesFeature.set(
@@ -265,12 +276,12 @@ class UrlInputFragment :
                     TopSitesConfig(
                         totalSites = TOP_SITES_MAX_LIMIT,
                         frecencyConfig = null,
-                        providerConfig = null
+                        providerConfig = null,
                     )
-                }
+                },
             ),
             owner = this,
-            view = view
+            view = view,
         )
 
         binding.dismissView.setOnClickListener(this)
@@ -285,7 +296,7 @@ class UrlInputFragment :
         } else {
             binding.backgroundView.background = AppCompatResources.getDrawable(
                 requireContext(),
-                R.drawable.home_background
+                R.drawable.home_background,
             )
 
             binding.dismissView.visibility = View.GONE
@@ -321,13 +332,13 @@ class UrlInputFragment :
         requireComponents.tabsUseCases.addTab(
             SupportUtils.HELP_URL,
             source = SessionState.Source.Internal.Menu,
-            private = true
+            private = true,
         )
     }
 
     private fun openSettingsPage() {
         requireComponents.appStore.dispatch(
-            AppAction.OpenSettings(page = Screen.Settings.Page.Start)
+            AppAction.OpenSettings(page = Screen.Settings.Page.Start),
         )
     }
 
@@ -344,7 +355,7 @@ class UrlInputFragment :
         super.onStart()
 
         activity?.let {
-            if (requireContext().settings.isFirstRun()) return@onStart
+            if (requireContext().settings.isFirstRun) return@onStart
         }
     }
 
@@ -355,7 +366,7 @@ class UrlInputFragment :
             // Make sure we update the background for landscape / portrait orientations.
             binding.backgroundView.background = AppCompatResources.getDrawable(
                 requireContext(),
-                R.drawable.home_background
+                R.drawable.home_background,
             )
         }
     }
@@ -427,24 +438,27 @@ class UrlInputFragment :
         isAnimating = true
 
         val xyOffset = (
-            if (isOverlay)
+            if (isOverlay) {
                 (binding.urlInputContainerView.layoutParams as FrameLayout.LayoutParams).bottomMargin
-            else
+            } else {
                 0
+            }
             ).toFloat()
 
         val width = binding.urlInputBackgroundView.width.toFloat()
         val height = binding.urlInputBackgroundView.height.toFloat()
 
-        val widthScale = if (isOverlay)
+        val widthScale = if (isOverlay) {
             (width + 2 * xyOffset) / width
-        else
+        } else {
             1f
+        }
 
-        val heightScale = if (isOverlay)
+        val heightScale = if (isOverlay) {
             (height + 2 * xyOffset) / height
-        else
+        } else {
             1f
+        }
 
         if (!reverse) {
             binding.urlInputBackgroundView.apply {
@@ -465,17 +479,19 @@ class UrlInputFragment :
             .alpha((if (reverse && isOverlay) 0 else 1).toFloat())
             .translationX(if (reverse) -xyOffset else 0f)
             .translationY(if (reverse) -xyOffset else 0f)
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    if (reverse) {
-                        if (isOverlay) {
-                            dismiss()
+            .setListener(
+                object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        if (reverse) {
+                            if (isOverlay) {
+                                dismiss()
+                            }
                         }
-                    }
 
-                    isAnimating = false
-                }
-            })
+                        isAnimating = false
+                    }
+                },
+            )
 
         // We only need to animate the toolbar if we are an overlay.
         /*
@@ -537,9 +553,10 @@ class UrlInputFragment :
             if (isUrl) {
                 SearchBar.enteredUrl.record(NoExtras())
             } else {
-                val defaultSearchEngineName = requireComponents.store.defaultSearchEngineName().lowercase()
+                val defaultSearchEngineName =
+                    requireComponents.store.defaultSearchEngineName().lowercase()
                 SearchBar.performedSearch.record(
-                    SearchBar.PerformedSearchExtra(defaultSearchEngineName)
+                    SearchBar.PerformedSearchExtra(defaultSearchEngineName),
                 )
                 TelemetryWrapper.searchEnterEvent()
                 BrowserSearch.searchCount["$defaultSearchEngineName.action"].add()
@@ -556,19 +573,25 @@ class UrlInputFragment :
     private fun normalizeUrlAndSearchTerms(input: String): Triple<Boolean, String, String?> {
         val isUrl = UrlUtils.isUrl(input)
 
-        val url = if (isUrl)
+        val url = if (isUrl) {
             UrlUtils.normalize(input)
-        else
+        } else {
             SearchUtils.createSearchUrl(context, input)
+        }
 
-        val searchTerms = if (isUrl)
+        val searchTerms = if (isUrl) {
             null
-        else
+        } else {
             input.trim { it <= ' ' }
+        }
         return Triple(isUrl, url, searchTerms)
     }
 
-    private fun onSearch(query: String, isSuggestion: Boolean = false, alwaysSearch: Boolean = false) {
+    private fun onSearch(
+        query: String,
+        isSuggestion: Boolean = false,
+        alwaysSearch: Boolean = false,
+    ) {
         if (alwaysSearch) {
             val url = SearchUtils.createSearchUrl(context, query)
             openUrl(url, query)
@@ -593,7 +616,7 @@ class UrlInputFragment :
         when (url) {
             "focus:about" -> {
                 requireComponents.appStore.dispatch(
-                    AppAction.OpenSettings(Screen.Settings.Page.About)
+                    AppAction.OpenSettings(Screen.Settings.Page.About),
                 )
                 return
             }
@@ -601,7 +624,12 @@ class UrlInputFragment :
 
         if (!searchTerms.isNullOrEmpty()) {
             tab?.let {
-                requireComponents.store.dispatch(ContentAction.UpdateSearchTermsAction(it.id, searchTerms))
+                requireComponents.store.dispatch(
+                    ContentAction.UpdateSearchTermsAction(
+                        it.id,
+                        searchTerms,
+                    ),
+                )
             }
         }
 
@@ -615,11 +643,16 @@ class UrlInputFragment :
                 url,
                 source = SessionState.Source.Internal.UserEntered,
                 selectTab = true,
-                private = true
+                private = true,
             )
 
             if (!searchTerms.isNullOrEmpty()) {
-                requireComponents.store.dispatch(ContentAction.UpdateSearchTermsAction(tabId, searchTerms))
+                requireComponents.store.dispatch(
+                    ContentAction.UpdateSearchTermsAction(
+                        tabId,
+                        searchTerms,
+                    ),
+                )
             }
         }
     }

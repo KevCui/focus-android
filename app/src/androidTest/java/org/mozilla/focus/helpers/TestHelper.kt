@@ -22,7 +22,6 @@ import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.MediaStore.setIncludePending
-import android.text.format.DateUtils
 import android.util.Log
 import android.view.KeyEvent
 import androidx.browser.customtabs.CustomTabsIntent
@@ -46,18 +45,20 @@ import org.junit.Assert
 import org.junit.Assert.assertTrue
 import org.mozilla.focus.R
 import org.mozilla.focus.activity.IntentReceiverActivity
+import org.mozilla.focus.ext.getApplicationInfoCompat
 import org.mozilla.focus.utils.IntentUtils
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
+import java.util.concurrent.TimeUnit
 
 @Suppress("TooManyFunctions")
 object TestHelper {
     @JvmField
     var mDevice = UiDevice.getInstance(getInstrumentation())
-    const val waitingTime = DateUtils.SECOND_IN_MILLIS * 15
-    const val pageLoadingTime = DateUtils.SECOND_IN_MILLIS * 25
-    const val waitingTimeShort = DateUtils.SECOND_IN_MILLIS * 5
+    val waitingTime = TimeUnit.SECONDS.toMillis(15)
+    val pageLoadingTime = TimeUnit.SECONDS.toMillis(25)
+    val waitingTimeShort: Long = TimeUnit.SECONDS.toMillis(3)
 
     private val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
     fun randomString(stringLength: Int) =
@@ -87,8 +88,8 @@ object TestHelper {
             onView(
                 allOf(
                     withId(R.id.snackbar_action),
-                    withText(action)
-                )
+                    withText(action),
+                ),
             )
         snackbarActionButton.perform(click())
     }
@@ -101,7 +102,7 @@ object TestHelper {
     fun isPackageInstalled(packageName: String): Boolean {
         return try {
             val packageManager = getInstrumentation().context.packageManager
-            packageManager.getApplicationInfo(packageName, 0).enabled
+            packageManager.getApplicationInfoCompat(packageName, 0).enabled
         } catch (exception: PackageManager.NameNotFoundException) {
             Log.d("TestLog", exception.message.toString())
             false
@@ -223,7 +224,7 @@ object TestHelper {
             queryCollection,
             queryProjection,
             queryBundle,
-            null
+            null,
         )?.use {
             if (it.count > 0) {
                 val idColumnIndex = it.getColumnIndex(MediaStore.Downloads._ID)
@@ -244,8 +245,8 @@ object TestHelper {
                         Build.VERSION_CODES.R ->
                             "While using the app"
                         else -> "Allow"
-                    }
-                )
+                    },
+                ),
             ).click()
         }
     }
@@ -274,7 +275,7 @@ object TestHelper {
     fun createCustomTabIntent(
         pageUrl: String,
         customMenuItemLabel: String = "",
-        customActionButtonDescription: String = ""
+        customActionButtonDescription: String = "",
     ): Intent {
         val appContext = getInstrumentation()
             .targetContext
@@ -319,69 +320,69 @@ object TestHelper {
     var menuButton = Espresso.onView(
         Matchers.allOf(
             ViewMatchers.withId(R.id.menuView),
-            ViewMatchers.isDisplayed()
-        )
+            ViewMatchers.isDisplayed(),
+        ),
     )
 
     @JvmField
     var permAllowBtn = mDevice.findObject(
         UiSelector()
             .textContains("Allow")
-            .clickable(true)
+            .clickable(true),
     )
 
     @JvmField
     var webView = mDevice.findObject(
         UiSelector()
             .className("android.webkit.WebView")
-            .enabled(true)
+            .enabled(true),
     )
     var geckoView = mDevice.findObject(
         UiSelector()
             .resourceId(packageName + ":id/engineView")
-            .enabled(true)
+            .enabled(true),
     )
 
     @JvmField
     var progressBar = mDevice.findObject(
         UiSelector()
             .resourceId(packageName + ":id/progress")
-            .enabled(true)
+            .enabled(true),
     )
 
     @JvmField
     var AddtoHSmenuItem = mDevice.findObject(
         UiSelector()
             .resourceId(packageName + ":id/add_to_homescreen")
-            .enabled(true)
+            .enabled(true),
     )
 
     @JvmField
     var AddtoHSCancelBtn = mDevice.findObject(
         UiSelector()
             .resourceId(packageName + ":id/addtohomescreen_dialog_cancel")
-            .enabled(true)
+            .enabled(true),
     )
 
     @JvmField
     var securityInfoIcon = mDevice.findObject(
         UiSelector()
             .resourceId(packageName + ":id/security_info")
-            .enabled(true)
+            .enabled(true),
     )
 
     @JvmField
     var identityState = mDevice.findObject(
         UiSelector()
             .resourceId(packageName + ":id/site_identity_state")
-            .enabled(true)
+            .enabled(true),
     )
 
     @JvmField
     var shareAppList = mDevice.findObject(
         UiSelector()
             .resourceId("android:id/resolver_list")
-            .enabled(true)
+            .enabled(true),
     )
 
     @JvmStatic

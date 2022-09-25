@@ -15,6 +15,7 @@ import mozilla.components.feature.customtabs.createCustomTabConfigFromIntent
 import org.mozilla.focus.BuildConfig
 import org.mozilla.focus.activity.CustomTabActivity
 import org.mozilla.focus.ext.components
+import org.mozilla.focus.ext.getPackageInfoCompat
 import org.mozilla.focus.locale.Locales
 import org.mozilla.focus.state.AppAction
 import java.io.UnsupportedEncodingException
@@ -38,7 +39,7 @@ object SupportUtils {
 
     enum class SumoTopic(
         /** The final path segment for a SUMO URL - see {@see #getSumoURLForTopic}  */
-        internal val topicStr: String
+        internal val topicStr: String,
     ) {
         ADD_SEARCH_ENGINE("add-search-engine"),
         AUTOCOMPLETE("autofill-domain-android"),
@@ -49,7 +50,7 @@ object SupportUtils {
         SEARCH_SUGGESTIONS("search-suggestions-focus-android"),
         ALLOWLIST("focus-android-allowlist"),
         STUDIES("how-opt-out-studies-firefox-focus-android"),
-        HTTPS_ONLY("https-only-prefs-focus")
+        HTTPS_ONLY("https-only-prefs-focus"),
     }
 
     fun getGenericSumoURLForTopic(topic: SumoTopic): String {
@@ -82,7 +83,7 @@ object SupportUtils {
 
     private fun getAppVersion(context: Context): String {
         try {
-            return context.packageManager.getPackageInfo(context.packageName, 0).versionName
+            return context.packageManager.getPackageInfoCompat(context.packageName, 0).versionName
         } catch (e: PackageManager.NameNotFoundException) {
             // This should be impossible - we should always be able to get information about ourselves:
             throw IllegalStateException("Unable find package details for Focus", e)
@@ -94,11 +95,11 @@ object SupportUtils {
             DEFAULT_BROWSER_URL,
             source = SessionState.Source.Internal.Menu,
             selectTab = true,
-            private = true
+            private = true,
         )
 
         context.components.appStore.dispatch(
-            AppAction.OpenTab(tabId)
+            AppAction.OpenTab(tabId),
         )
     }
 
@@ -107,7 +108,7 @@ object SupportUtils {
             url = destinationUrl,
             customTabConfig = createCustomTabConfigFromIntent(activity.intent, activity.resources),
             private = true,
-            source = SessionState.Source.Internal.None
+            source = SessionState.Source.Internal.None,
         )
         val openCustomTabActivityIntent =
             Intent(activity, CustomTabActivity::class.java).apply {

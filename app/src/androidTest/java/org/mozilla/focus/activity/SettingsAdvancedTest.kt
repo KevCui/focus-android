@@ -7,6 +7,7 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -35,7 +36,7 @@ class SettingsAdvancedTest {
             start()
         }
         featureSettingsHelper.setCfrForTrackingProtectionEnabled(false)
-        featureSettingsHelper.setNumberOfTabsOpened(4)
+        featureSettingsHelper.setSearchWidgetDialogEnabled(false)
     }
 
     @After
@@ -44,6 +45,7 @@ class SettingsAdvancedTest {
         featureSettingsHelper.resetAllFeatureFlags()
     }
 
+    @Ignore("Failing: https://github.com/mozilla-mobile/focus-android/issues/7659")
     @SmokeTest
     @Test
     fun openLinksInAppsTest() {

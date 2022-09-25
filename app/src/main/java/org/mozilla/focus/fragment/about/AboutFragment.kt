@@ -33,6 +33,7 @@ import mozilla.components.browser.state.state.SessionState
 import org.mozilla.focus.R
 import org.mozilla.focus.databinding.FragmentAboutBinding
 import org.mozilla.focus.ext.components
+import org.mozilla.focus.ext.getPackageInfoCompat
 import org.mozilla.focus.ext.showToolbar
 import org.mozilla.focus.settings.BaseSettingsLikeFragment
 import org.mozilla.focus.state.AppAction
@@ -51,7 +52,7 @@ class AboutFragment : BaseSettingsLikeFragment() {
             url = manifestoURL,
             source = SessionState.Source.Internal.Menu,
             selectTab = true,
-            private = true
+            private = true,
         )
         requireContext().components.appStore.dispatch(AppAction.OpenTab(tabId))
     }
@@ -65,7 +66,7 @@ class AboutFragment : BaseSettingsLikeFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val binding = FragmentAboutBinding.inflate(inflater, container, false)
 
@@ -96,7 +97,7 @@ class AboutFragment : BaseSettingsLikeFragment() {
                 content,
                 learnMore,
                 secretSettingsUnlocker,
-                openLearnMore
+                openLearnMore,
             )
         }
         return binding.root
@@ -109,7 +110,7 @@ class AboutFragment : BaseSettingsLikeFragment() {
         val componentsIndicator = mozilla.components.Build.version + ", " + mozilla.components.Build.gitHash
         val servicesAbbreviation = getString(R.string.services_abbreviation)
         val servicesIndicator = mozilla.components.Build.applicationServicesVersion
-        val packageInfo = requireContext().packageManager.getPackageInfo(requireContext().packageName, 0)
+        val packageInfo = requireContext().packageManager.getPackageInfoCompat(requireContext().packageName, 0)
         val versionCode = PackageInfoCompat.getLongVersionCode(packageInfo).toString()
 
         @Suppress("ImplicitDefaultLocale") // We want LTR in all cases as the version is not translatable.
@@ -120,7 +121,7 @@ class AboutFragment : BaseSettingsLikeFragment() {
             componentsAbbreviation,
             componentsIndicator,
             servicesAbbreviation,
-            servicesIndicator
+            servicesIndicator,
         )
     }
 }
@@ -131,9 +132,8 @@ private fun AboutPageContent(
     content: String,
     learnMore: String,
     secretSettingsUnlocker: SecretSettingsUnlocker,
-    openLearnMore: () -> Job
+    openLearnMore: () -> Job,
 ) {
-
     FocusTheme {
         Column(
             modifier = Modifier
@@ -141,7 +141,7 @@ private fun AboutPageContent(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
 
         ) {
             LogoIcon(secretSettingsUnlocker)
@@ -161,7 +161,7 @@ private fun LogoIcon(secretSettingsUnlocker: SecretSettingsUnlocker) {
             .padding(4.dp)
             .clickable {
                 secretSettingsUnlocker.increment()
-            }
+            },
     )
 }
 
@@ -172,10 +172,10 @@ private fun VersionInfo(aboutVersion: String) {
         color = focusColors.aboutPageText,
         style = focusTypography.body1.copy(
             // Use LTR in all cases since the version is not translatable.
-            textDirection = TextDirection.Ltr
+            textDirection = TextDirection.Ltr,
         ),
         modifier = Modifier
-            .padding(10.dp)
+            .padding(10.dp),
     )
 }
 
@@ -186,14 +186,14 @@ private fun AboutContent(content: String) {
         color = focusColors.aboutPageText,
         style = focusTypography.body1,
         modifier = Modifier
-            .padding(10.dp)
+            .padding(10.dp),
     )
 }
 
 @Composable
 fun ColumnScope.LearnMoreLink(
     learnMore: String,
-    openLearnMore: () -> Job
+    openLearnMore: () -> Job,
 ) {
     Text(
         text = learnMore,
@@ -205,6 +205,6 @@ fun ColumnScope.LearnMoreLink(
             .align(Start)
             .clickable {
                 openLearnMore()
-            }
+            },
     )
 }

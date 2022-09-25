@@ -76,7 +76,7 @@ class CustomTabActivity : LocaleAwareAppCompatActivity() {
         if (browserFragment.sessionFeature.onBackPressed()) {
             return
         } else {
-            super.onBackPressed()
+            super.getOnBackPressedDispatcher().onBackPressed()
         }
     }
 
@@ -84,7 +84,9 @@ class CustomTabActivity : LocaleAwareAppCompatActivity() {
         return if (name == EngineView::class.java.name) {
             val engineView = components.engine.createView(context, attrs)
             engineView.asView()
-        } else super.onCreateView(parent, name, context, attrs)
+        } else {
+            super.onCreateView(parent, name, context, attrs)
+        }
     }
 
     companion object {

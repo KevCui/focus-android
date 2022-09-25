@@ -5,6 +5,7 @@ import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mozilla.focus.ext.getPackageInfoCompat
 import org.robolectric.RobolectricTestRunner
 import java.util.Locale
 
@@ -26,7 +27,7 @@ class SupportUtilsTest {
     @Throws(Exception::class)
     fun getSumoURLForTopic() {
         val context = ApplicationProvider.getApplicationContext() as Application
-        val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
+        val versionName = context.packageManager.getPackageInfoCompat(context.packageName, 0).versionName
 
         val testTopic = SupportUtils.SumoTopic.TRACKERS
         val testTopicStr = testTopic.topicStr
@@ -34,13 +35,13 @@ class SupportUtilsTest {
         Locale.setDefault(Locale.GERMANY)
         assertEquals(
             "https://support.mozilla.org/1/mobile/$versionName/Android/de-DE/$testTopicStr",
-            SupportUtils.getSumoURLForTopic(ApplicationProvider.getApplicationContext(), testTopic)
+            SupportUtils.getSumoURLForTopic(ApplicationProvider.getApplicationContext(), testTopic),
         )
 
         Locale.setDefault(Locale.CANADA_FRENCH)
         assertEquals(
             "https://support.mozilla.org/1/mobile/$versionName/Android/fr-CA/$testTopicStr",
-            SupportUtils.getSumoURLForTopic(ApplicationProvider.getApplicationContext(), testTopic)
+            SupportUtils.getSumoURLForTopic(ApplicationProvider.getApplicationContext(), testTopic),
         )
     }
 
@@ -54,13 +55,13 @@ class SupportUtilsTest {
         Locale.setDefault(Locale.UK)
         assertEquals(
             "https://www.mozilla.org/en-GB/about/manifesto/",
-            SupportUtils.manifestoURL
+            SupportUtils.manifestoURL,
         )
 
         Locale.setDefault(Locale.KOREA)
         assertEquals(
             "https://www.mozilla.org/ko-KR/about/manifesto/",
-            SupportUtils.manifestoURL
+            SupportUtils.manifestoURL,
         )
     }
 }

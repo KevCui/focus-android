@@ -20,8 +20,6 @@ import org.mozilla.focus.utils.ViewUtils
 
 class RemoveSearchEnginesSettingsFragment : BaseSettingsFragment() {
     override fun onCreatePreferences(p0: Bundle?, p1: String?) {
-        setHasOptionsMenu(true)
-
         addPreferencesFromResource(R.xml.remove_search_engines)
     }
 
@@ -35,13 +33,13 @@ class RemoveSearchEnginesSettingsFragment : BaseSettingsFragment() {
         showToolbar(getString(R.string.preference_search_remove_title))
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_remove_search_engines, menu)
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        super.onCreateMenu(menu, menuInflater)
+        menuInflater.inflate(R.menu.menu_remove_search_engines, menu)
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
+    override fun onPrepareMenu(menu: Menu) {
+        super.onPrepareMenu(menu)
         view?.post {
             val pref = preferenceScreen
                 .findPreference(resources.getString(R.string.pref_key_multiselect_search_engine_list))
@@ -53,8 +51,8 @@ class RemoveSearchEnginesSettingsFragment : BaseSettingsFragment() {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        return when (menuItem.itemId) {
             R.id.menu_delete_items -> {
                 val pref: MultiselectSearchEngineListPreference? = preferenceScreen
                     .findPreference(resources.getString(R.string.pref_key_multiselect_search_engine_list))
@@ -72,11 +70,11 @@ class RemoveSearchEnginesSettingsFragment : BaseSettingsFragment() {
                 SearchEngines.removeEngines.record(SearchEngines.RemoveEnginesExtra(enginesToRemove.size))
 
                 requireComponents.appStore.dispatch(
-                    AppAction.NavigateUp(requireComponents.store.state.selectedTabId)
+                    AppAction.NavigateUp(requireComponents.store.state.selectedTabId),
                 )
                 true
             }
-            else -> super.onOptionsItemSelected(item)
+            else -> false
         }
     }
 }

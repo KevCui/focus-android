@@ -42,11 +42,11 @@ class EnhancedTrackingProtectionSettingsTest {
     @Before
     fun setUp() {
         featureSettingsHelper.setCfrForTrackingProtectionEnabled(false)
-        featureSettingsHelper.setNumberOfTabsOpened(4)
         webServer = MockWebServer().apply {
             dispatcher = MockWebServerHelper.AndroidAssetDispatcher()
             start()
         }
+        featureSettingsHelper.setSearchWidgetDialogEnabled(false)
     }
 
     @After
@@ -180,6 +180,7 @@ class EnhancedTrackingProtectionSettingsTest {
         }
     }
 
+    @Ignore("See https://github.com/mozilla-mobile/focus-android/issues/7667")
     @SmokeTest
     @Test
     fun allowSocialTrackersTest() {

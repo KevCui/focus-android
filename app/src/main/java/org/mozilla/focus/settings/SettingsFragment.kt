@@ -23,7 +23,6 @@ import org.mozilla.focus.whatsnew.WhatsNew
 class SettingsFragment : BaseSettingsFragment() {
 
     override fun onCreatePreferences(bundle: Bundle?, s: String?) {
-        setHasOptionsMenu(true)
         addPreferencesFromResource(R.xml.settings)
     }
 
@@ -46,22 +45,22 @@ class SettingsFragment : BaseSettingsFragment() {
         }
 
         requireComponents.appStore.dispatch(
-            AppAction.OpenSettings(page)
+            AppAction.OpenSettings(page),
         )
 
         return super.onPreferenceTreeClick(preference)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_settings_main, menu)
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.menu_settings_main, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.menu_whats_new) {
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        if (menuItem.itemId == R.id.menu_whats_new) {
             whatsNewClicked()
             return true
         }
-        return super.onOptionsItemSelected(item)
+        return false
     }
 
     private fun whatsNewClicked() {
@@ -73,16 +72,17 @@ class SettingsFragment : BaseSettingsFragment() {
 
         WhatsNew.userViewedWhatsNew(context)
 
-        val sumoTopic = if (AppConstants.isKlarBuild)
+        val sumoTopic = if (AppConstants.isKlarBuild) {
             SupportUtils.SumoTopic.WHATS_NEW_KLAR
-        else
+        } else {
             SupportUtils.SumoTopic.WHATS_NEW_FOCUS
+        }
 
         val url = SupportUtils.getSumoURLForTopic(context, sumoTopic)
         requireComponents.tabsUseCases.addTab(
             url,
             source = SessionState.Source.Internal.Menu,
-            private = true
+            private = true,
         )
     }
 

@@ -51,8 +51,6 @@ import java.util.concurrent.TimeUnit
 @Suppress("TooManyFunctions")
 class ManualAddSearchEngineSettingsFragment : BaseSettingsFragment() {
     override fun onCreatePreferences(p0: Bundle?, p1: String?) {
-        setHasOptionsMenu(true)
-
         addPreferencesFromResource(R.xml.manual_add_search_engine)
     }
 
@@ -72,20 +70,22 @@ class ManualAddSearchEngineSettingsFragment : BaseSettingsFragment() {
         menuItemForActiveAsyncTask = null
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_search_engine_manual_add, menu)
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.menu_search_engine_manual_add, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         val openLearnMore = {
             val learnMoreUrl = SupportUtils.getSumoURLForTopic(
                 requireContext(),
-                SupportUtils.SumoTopic.ADD_SEARCH_ENGINE
+                SupportUtils.SumoTopic.ADD_SEARCH_ENGINE,
             )
             SupportUtils.openUrlInCustomTab(requireActivity(), learnMoreUrl)
             SearchEngines.learnMoreTapped.record(NoExtras())
 
             TelemetryWrapper.addSearchEngineLearnMoreEvent()
+
+            true
         }
 
         val saveSearchEngine = {
@@ -101,9 +101,9 @@ class ManualAddSearchEngineSettingsFragment : BaseSettingsFragment() {
 
             if (isPartialSuccess) {
                 ViewUtils.hideKeyboard(view)
-                setUiIsValidatingAsync(true, item)
+                setUiIsValidatingAsync(true, menuItem)
 
-                menuItemForActiveAsyncTask = item
+                menuItemForActiveAsyncTask = menuItem
                 scope?.launch {
                     validateSearchEngine(engineName, searchQuery, requireComponents.client)
                 }
@@ -112,21 +112,21 @@ class ManualAddSearchEngineSettingsFragment : BaseSettingsFragment() {
 
                 TelemetryWrapper.saveCustomSearchEngineEvent(false)
             }
+
+            true
         }
 
-        when (item.itemId) {
+        return when (menuItem.itemId) {
             R.id.learn_more -> openLearnMore()
             R.id.menu_save_search_engine -> saveSearchEngine()
-            else -> return super.onOptionsItemSelected(item)
+            else -> false
         }
-
-        return true
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         scope = CoroutineScope(Dispatchers.IO)
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -206,7 +206,7 @@ class ManualAddSearchEngineSettingsFragment : BaseSettingsFragment() {
                 connectTimeout = SEARCH_QUERY_VALIDATION_TIMEOUT_MILLIS.toLong() to TimeUnit.MILLISECONDS,
                 readTimeout = SEARCH_QUERY_VALIDATION_TIMEOUT_MILLIS.toLong() to TimeUnit.MILLISECONDS,
                 redirect = FOLLOW,
-                private = true
+                private = true,
             )
 
             return try {
@@ -236,8 +236,8 @@ class ManualAddSearchEngineSettingsFragment : BaseSettingsFragment() {
                     createSearchEngine(
                         engineName,
                         query.toSearchUrl(),
-                        requireComponents.icons.loadIcon(IconRequest(query, isPrivate = true)).await().bitmap
-                    )
+                        requireComponents.icons.loadIcon(IconRequest(query, isPrivate = true)).await().bitmap,
+                    ),
                 )
 
                 ViewUtils.showBrandedSnackbar(requireView(), R.string.search_add_confirmation, Snackbar.LENGTH_SHORT)
@@ -245,7 +245,7 @@ class ManualAddSearchEngineSettingsFragment : BaseSettingsFragment() {
                 SearchEngines.saveEngineTapped.record(SearchEngines.SaveEngineTappedExtra(true))
 
                 requireComponents.appStore.dispatch(
-                    AppAction.NavigateUp(requireComponents.store.state.selectedTabId)
+                    AppAction.NavigateUp(requireComponents.store.state.selectedTabId),
                 )
             } else {
                 showServerError()

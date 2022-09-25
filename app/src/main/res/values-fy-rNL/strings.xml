@@ -295,12 +295,11 @@
 
     <!-- Preference Title: Biometrics can be used to unlock Focus if the previous session's data was not erased by the user. -->
     <string name="preference_security_biometric">Fingerôfdruk foar ûntskoatteljen fan app brûke</string>
+
     <!-- Preference Summary: Biometrics (iris scan, fingerprint, or facial scan) can be used to unlock Focus if the app had a URL
         open when the app was last run to ensure that only the phone's owner can view a previous session.
         %s will be replaced by the app name (e.g. Firefox Focus)
         Shortcuts is a feature that allows the user to pin his favorite websites to Focus home screen so he can quickly access them-->
-    <string moz:removedIn="102" name="preference_security_biometric_summary" tools:ignore="UnusedResources">Jo fingerôfdruk kin %1$s ûntskoattelje as der al in URL yn de app iepene is. Stealth wurdt ynskeakele.</string>
-
     <string name="preference_security_biometric_summary2">Untskoattelje mei fingerôfdruk as jo fluchtoetsen tafoege hawwe of as in website al iepen is yn %s.</string>
 
     <!-- Preference Title: Secure Mode is a setting that prevents the app's content to show up in the "recent apps" screen
@@ -366,7 +365,7 @@
 
     <!-- Title: Homescreen tips settings toggle to determine whether or not tips are displayed when
      a user first launches the app. -->
-    <string name="preference_homescreen_tips">Tips op startskerm toane</string>
+    <string moz:removedIn="105" name="preference_homescreen_tips" tools:ignore="UnusedResources">Tips op startskerm toane</string>
 
     <!-- Clickable action text that shows when user long-presses on a search engine search field (this is similar to paste or copy when long-pressing a text field) -->
     <string name="action_option_add_search_engine">Sykmasine tafoegje</string>
@@ -496,34 +495,64 @@
 
   <!-- Onboarding: Title -->
     <!-- %1$s will be replaced by the app name and build variant(e.g. Firefox Focus, Firefox Klar Nightly) -->
-    <string name="onboarding_title">Wolkom bij %1$s!</string>
+    <string moz:removedIn="106" name="onboarding_title">Wolkom bij %1$s!</string>
+
+    <!-- Content description (not visible, for screen readers etc.): This is the description for the close button from the new onboarding flow screen one and two -->
+    <string name="onboarding_close_button_content_description">Slute</string>
+
+    <!-- New Onboarding flow first screen title -->
+    <!-- %1$s will be replaced by the app name and build variant(e.g. Firefox Focus, Firefox Klar Nightly) -->
+    <string name="onboarding_first_screen_title">Wolkom bij %1$s</string>
+
+    <!-- New Onboarding flow first screen subtitle the one that appears under title -->
+    <string name="onboarding_first_screen_subtitle">Fluch. Privee. Gjin ôflieding.</string>
+
+    <!-- New Onboarding flow first screen button label-->
+    <string name="onboarding_first_screen_button_text">Begjinne</string>
+
+    <!-- Onboarding second screen: Title -->
+    <!-- %1$s will be replaced by the app short name(Focus) -->
+    <string name="onboarding_second_screen_title">%1$s is net lykas oare browsers</string>
+
+
+    <!-- New Onboarding flow second screen subtitle the one that appears under title -->
+    <string name="onboarding_second_screen_subtitle_one">As jo de app slute wiskje wy jo skiednis foar ekstra privacy.</string>
+
+    <!-- New Onboarding flow second screen subtitle two the one that appears under subtitle one -->
+    <!-- %1$s will be replaced by the app short name(Focus) -->
+    <string name="onboarding_second_screen_subtitle_two">Meitsje %1$s jo standert om jo gegevens te beskermjen mei elke keppeling dy’t jo iepenje.</string>
+
+    <!-- New Onboarding flow second screen make Focus default browser button label-->
+    <string name="onboarding_second_screen_default_browser_button_text">As standertbrowser ynstelle</string>
+
+    <!-- New Onboarding flow second screen skip onboarding button label-->
+    <string name="onboarding_second_screen_skip_button_text">Oerslaan</string>
+
 
     <!-- Onboarding: Description -->
-    <string name="onboarding_description">Avansearre priveenavigaasje wannear’t jo dat wolle</string>
+    <string moz:removedIn="106" name="onboarding_description">Avansearre priveenavigaasje wannear’t jo dat wolle</string>
 
     <!-- Onboarding: Incognito Title -->
-    <string name="onboarding_incognito_title">Wêr ynkognito ûnsichtber moetet</string>
+    <string moz:removedIn="106" name="onboarding_incognito_title">Wêr ynkognito ûnsichtber moetet</string>
 
     <!-- Onboarding: Incognito Description -->
     <!-- Text %s will be replaced with the name of the app (e.g. Focus, Klar) -->
-    <string name="onboarding_incognito_description">%s is in browser dy’t privacy foarop stelt, mei ynboude ekstra sterke beskerming tsjin folgjen en cookies.</string>
+    <string moz:removedIn="106" name="onboarding_incognito_description">%s is in browser dy’t privacy foarop stelt, mei ynboude ekstra sterke beskerming tsjin folgjen en cookies.</string>
 
     <!-- Onboarding: History Title -->
-    <string name="onboarding_history_title">Sneup as oft it nea bard is</string>
+    <string moz:removedIn="106" name="onboarding_history_title">Sneup as oft it nea bard is</string>
 
     <!-- Onboarding: History Description -->
-    <string moz:removedIn="100" name="onboarding_history_description" tools:ignore="UnusedResources">Mei ien tik wurde jo navigaasjeskiednis en cookies wiske en wurdt foarkommen dat advertinsjes jo folgje.</string>
-
-    <string name="onboarding_history_description2">Mei ien tik wurde jo navigaasjeskiednis en cookies wiske en wurdt foarkommen dat advertinsjes jo folgje.</string>
+    <string moz:removedIn="106" name="onboarding_history_description2">Mei ien tik wurde jo navigaasjeskiednis en cookies wiske en wurdt foarkommen dat advertinsjes jo folgje.</string>
 
     <!-- Onboarding: Protection Title -->
-    <string name="onboarding_protection_title">Privacy foar elke situaasje</string>
+    <string moz:removedIn="106" name="onboarding_protection_title">Privacy foar elke situaasje</string>
 
     <!-- Onboarding: Protection Description -->
-    <string name="onboarding_protection_description">As de manier wêrop jo sneupe wizige wurde moat, kinne jo jo privacy-ynstellingen ienfâldich op- of ôfskeale.</string>
+    <string moz:removedIn="106" name="onboarding_protection_description">As de manier wêrop jo sneupe wizige wurde moat, kinne jo jo privacy-ynstellingen ienfâldich op- of ôfskeale.</string>
 
     <!-- Onboarding: Start browsing -->
-    <string name="onboarding_start_browsing">Begjinne mei browse</string>
+    <string moz:removedIn="106" name="onboarding_start_browsing">Begjinne mei browse</string>
 
     <!-- First run tour (Default browser): Title -->
     <string name="firstrun_defaultbrowser_title">Fergrutsje jo privacy</string>
@@ -821,7 +850,7 @@
 
     <!-- Tip displayed on home view explaining how to disable enhanced tracking protection
 The new line here must be kept as the second half of the string is clickable for the user. -->
-    <string name="tip_disable_tracking_protection3">Mist in website ynhâld of docht dizze har frjemd foar?\n
+    <string moz:removedIn="105" name="tip_disable_tracking_protection3" tools:ignore="UnusedResources">Mist in website ynhâld of docht dizze har frjemd foar?\n
     Probearje Ferbettere beskerming tsjin folgen út te skeakeljen</string>
 
     <!-- Tip displayed on home view explaining how to add sites to homescreen
@@ -843,7 +872,7 @@ The new line here must be kept as the second half of the string is clickable for
 
     <!-- Tip displayed on home view explaining how to request the desktop version of a website.
       %1$s is a placeholder for the app name. -->
-    <string name="tip_request_desktop2">Wolle jo de folsleine ferzje fan in website sjen?\n
+    <string moz:removedIn="105" name="tip_request_desktop2" tools:ignore="UnusedResources">Wolle jo de folsleine ferzje fan in website sjen?\n
         Skeakelje de desktopwebsite yn fan it %1$s-menu út</string>
 
     <!-- Tip displayed on home view explaining how to add a custom autocomplete URL -->
@@ -851,17 +880,17 @@ The new line here must be kept as the second half of the string is clickable for
 
     <!-- Tip displayed on the home view explaining how to use the Allowlist feature.
      "Allowlist" is a replacement for the word whitelist. -->
-    <string name="tip_explain_allowlist3">Wolle jo Ferbettere beskerming tsjin folgjen útskeakelje foar in website dy’t jo fertrouwe?\n
+    <string moz:removedIn="105" name="tip_explain_allowlist3" tools:ignore="UnusedResources">Wolle jo Ferbettere beskerming tsjin folgjen útskeakelje foar in website dy’t jo fertrouwe?\n
         Foegje dizze ta oan de Tastiene list yn de Ynstellingen
     </string>
 
     <!-- Tip displayed on the home view about the changes in the new release.
     %1$s is a placeholder for the app name -->
-    <string name="tip_fresh_look">Jawis, wy hawwe in frisse nije útstrieling!\n Mear ynfo hjiroer en oer oare updates fan %1$s.</string>
+    <string moz:removedIn="105" name="tip_fresh_look" tools:ignore="UnusedResources">Jawis, wy hawwe in frisse nije útstrieling!\n Mear ynfo hjiroer en oer oare updates fan %1$s.</string>
 
     <!-- Tip displayed on the home view about shortcuts
     %1$s is a placeholder for the app name -->
-    <string name="tip_about_shortcuts">Meitsje fluchkeppelingen foar de websites dy’t jo it meast besykje:\n
+    <string moz:removedIn="105" name="tip_about_shortcuts" tools:ignore="UnusedResources">Meitsje fluchkeppelingen foar de websites dy’t jo it meast besykje:\n
     Selektearje yn it %1$s-menu ‘Tafoegje oan fluchkeppelingen’</string>
 
     <!-- Label for the snackbar when a user opens a new tab -->
@@ -982,7 +1011,10 @@ The new line here must be kept as the second half of the string is clickable for
 
     <!-- Contextual Feature Recommendation Popups -->
     <!-- CFR for Toolbar Shield Icon (Banner Info Message) -->
-    <string name="cfr_for_toolbar_shield_icon">It liket derop dat dizze website jo probearre te folgjen. Klik op it skyld foar website-ynstellingen en trackerblokkearringsstatistiken.</string>
+    <string moz:removedIn="104" name="cfr_for_toolbar_shield_icon">It liket derop dat dizze website jo probearre te folgjen. Klik op it skyld foar website-ynstellingen en trackerblokkearringsstatistiken.</string>
+
+    <string name="cfr_for_toolbar_shield_icon2">Hebbes! Wy hawwe dizze website stoppe om jo te bespionearjen. Tik op elk momint op it skyld om te sjen wat wy blokkearje.</string>
+
     <!-- Content description (not visible, for screen readers etc.): Button that closes the CFR popup -->
     <string name="cfr_close_button_description">Pop-up slute</string>
 
@@ -995,6 +1027,31 @@ The new line here must be kept as the second half of the string is clickable for
     <string name="tool_tip_dismiss_button_content_description">Slute</string>
 
     <!-- CFR for Toolbar Delete Icon (Banner Info Message) -->
-    <string name="cfr_for_toolbar_delete_icon">Smyt jo persoanlike gegevens, navigaasjeskiednis en mear út dizze sesje troch op de jiskefetknop te tikken. Probearje it ris!</string>
+    <string moz:removedIn="105" name="cfr_for_toolbar_delete_icon" tools:ignore="UnusedResources">Smyt jo persoanlike gegevens, navigaasjeskiednis en mear út dizze sesje troch op de jiskefetknop te tikken. Probearje it ris!</string>
+    <string name="cfr_for_toolbar_delete_icon2">Tik hjir om alles fuort te smiten – skiednis, cookies, alles – en in farske start te meitsjen op in nij ljepblêd.</string>
 
+    <!-- Promote SearchWidget Dialog -->
+
+    !-- Content description (not visible, for screen readers etc.): This is the description for
+    picture of search widget from promote search widget dialog. --&gt;
+    <string name="promote_search_widget_dialog_content_description">Slute</string>
+
+    !-- Content description (not visible, for screen readers etc.): This is the description for
+    picture of search widget from promote search widget dialog. --&gt;
+    <string name="promote_search_widget_dialog_picture_content_description">Syk-widget</string>
+
+    !-- This is the title of promote search widget dialog. --&gt;
+    <string name="promote_search_widget_dialog_title">Navigaasjeskiednis wiske! 🎉</string>
+
+    !-- This is the subtitle of promote search widget dialog. %1$s will get replaced with the name
+    of the app (e.g. &quot;Focus&quot;) --&gt;
+    <string name="promote_search_widget_dialog_subtitle">Wy litte jo trochgean mei priveenavigaasje, mar krij in folgjende kear in fluggere start mei de %1$s-widget op jo startskerm.</string>
+
+    !-- This is te text from add search widget to home screen button .The button is located on
+    promote search widget dialog. --&gt;
+    <string name="promote_search_widget_button_text">Widget oan startskerm tafoegje</string>
+
+    !-- This is te text of the snackbar that appears after the search widget was added successfully
+    to the home screen. --&gt;
+    <string name="promote_search_widget_snackbar_message">Widget oan startskerm tafoege</string>
 </resources>

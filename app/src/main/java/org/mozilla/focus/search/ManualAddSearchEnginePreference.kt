@@ -19,6 +19,7 @@ import androidx.preference.PreferenceViewHolder
 import com.google.android.material.textfield.TextInputLayout
 import mozilla.components.browser.state.search.SearchEngine
 import org.mozilla.focus.R
+import org.mozilla.focus.ext.getParcelableCompat
 import org.mozilla.focus.utils.UrlUtils
 import org.mozilla.focus.utils.ViewUtils
 
@@ -45,14 +46,14 @@ class ManualAddSearchEnginePreference(context: Context, attrs: AttributeSet) :
         engineNameEditText = holder.findViewById(R.id.edit_engine_name) as EditText
         engineNameEditText?.addTextChangedListener(
             buildTextWatcherForErrorLayout(
-                engineNameErrorLayout!!
-            )
+                engineNameErrorLayout!!,
+            ),
         )
         searchQueryEditText = holder.findViewById(R.id.edit_search_string) as EditText
         searchQueryEditText?.addTextChangedListener(
             buildTextWatcherForErrorLayout(
-                searchQueryErrorLayout!!
-            )
+                searchQueryErrorLayout!!,
+            ),
         )
 
         progressView = holder.findViewById(R.id.progress) as ProgressBar
@@ -64,7 +65,7 @@ class ManualAddSearchEnginePreference(context: Context, attrs: AttributeSet) :
 
     override fun onRestoreInstanceState(state: Parcelable?) {
         val bundle = state as Bundle
-        super.onRestoreInstanceState(bundle.getParcelable(SUPER_STATE_KEY))
+        super.onRestoreInstanceState(bundle.getParcelableCompat(SUPER_STATE_KEY, Parcelable::class.java))
         savedSearchEngineName = bundle.getString(SEARCH_ENGINE_NAME_KEY)
         savedSearchQuery = bundle.getString(SEARCH_QUERY_KEY)
     }

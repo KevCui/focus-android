@@ -12,11 +12,9 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Surface
@@ -47,17 +45,19 @@ import org.mozilla.focus.ui.theme.focusColors
  * @param onRemoveTopSiteClicked Invoked when the user clicked 'Remove' item from drop down menu
  * @param onRenameTopSiteClicked Invoked when the user clicked 'Rename' item from drop down menu
  */
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TopSites(
     topSites: List<TopSite>,
     onTopSiteClicked: (TopSite) -> Unit,
     onRemoveTopSiteClicked: (TopSite) -> Unit,
-    onRenameTopSiteClicked: (TopSite) -> Unit
+    onRenameTopSiteClicked: (TopSite) -> Unit,
 ) {
-    LazyVerticalGrid(
-        cells = GridCells.Adaptive(72.dp),
-        contentPadding = PaddingValues(8.dp)
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 10.dp)
+            .size(width = 324.dp, height = 84.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(28.dp),
     ) {
         items(topSites.size) {
             index -> TopSiteItem (
@@ -72,7 +72,7 @@ fun TopSites(
                         onClick = { onRemoveTopSiteClicked(topSites[index]) }
                     )
                 ),
-                onTopSiteClick = { item -> onTopSiteClicked(item) }
+                onTopSiteClick = { item -> onTopSiteClicked(item) },
             )
         }
     }
@@ -90,7 +90,7 @@ fun TopSites(
 private fun TopSiteItem(
     topSite: TopSite,
     menuItems: List<MenuItem>,
-    onTopSiteClick: (TopSite) -> Unit = {}
+    onTopSiteClick: (TopSite) -> Unit = {},
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
 
@@ -101,10 +101,10 @@ private fun TopSiteItem(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                     onClick = { onTopSiteClick(topSite) },
-                    onLongClick = { menuExpanded = true }
+                    onLongClick = { menuExpanded = true },
                 )
                 .size(width = 60.dp, height = 84.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             TopSiteFaviconCard(topSite = topSite)
 
@@ -114,13 +114,13 @@ private fun TopSiteItem(
                 color = focusColors.topSiteTitle,
                 fontSize = 12.sp,
                 overflow = TextOverflow.Ellipsis,
-                maxLines = 1
+                maxLines = 1,
             )
 
             CustomDropdownMenu(
                 menuItems = menuItems,
                 isExpanded = menuExpanded,
-                onDismissClicked = { menuExpanded = false }
+                onDismissClicked = { menuExpanded = false },
             )
         }
     }
@@ -136,20 +136,20 @@ private fun TopSiteFaviconCard(topSite: TopSite) {
     Card(
         modifier = Modifier.size(60.dp),
         shape = RoundedCornerShape(8.dp),
-        backgroundColor = focusColors.topSiteBackground
+        backgroundColor = focusColors.topSiteBackground,
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Surface(
                 modifier = Modifier.size(36.dp),
                 shape = RoundedCornerShape(4.dp),
-                color = focusColors.surface
+                color = focusColors.surface,
             ) {
                 Column(
                     verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
                         text = if (topSite.title.isNullOrEmpty()) {
@@ -158,7 +158,7 @@ private fun TopSiteFaviconCard(topSite: TopSite) {
                             topSite.title?.get(0).toString()
                         },
                         color = focusColors.topSiteFaviconText,
-                        fontSize = 20.sp
+                        fontSize = 20.sp,
                     )
                 }
             }

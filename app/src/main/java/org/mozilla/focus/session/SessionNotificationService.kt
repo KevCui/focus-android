@@ -22,6 +22,7 @@ import org.mozilla.focus.GleanMetrics.RecentApps
 import org.mozilla.focus.R
 import org.mozilla.focus.activity.MainActivity
 import org.mozilla.focus.ext.components
+import org.mozilla.focus.ext.stopForegroundCompat
 import org.mozilla.focus.telemetry.TelemetryWrapper
 import org.mozilla.focus.utils.IntentUtils
 
@@ -76,7 +77,7 @@ class SessionNotificationService : Service() {
 
         components.tabsUseCases.removeAllTabs()
 
-        stopForeground(true)
+        stopForegroundCompat(true)
         stopSelf()
     }
 
@@ -95,15 +96,15 @@ class SessionNotificationService : Service() {
                 NotificationCompat.Action(
                     R.drawable.ic_notification,
                     getString(R.string.notification_action_open),
-                    createOpenActionIntent()
-                )
+                    createOpenActionIntent(),
+                ),
             )
             .addAction(
                 NotificationCompat.Action(
                     R.drawable.mozac_ic_delete,
                     getString(R.string.notification_action_erase_and_open),
-                    createOpenAndEraseActionIntent()
-                )
+                    createOpenAndEraseActionIntent(),
+                ),
             )
             .build()
     }
@@ -146,11 +147,13 @@ class SessionNotificationService : Service() {
         val notificationChannelName = getString(R.string.notification_browsing_session_channel_name)
         val notificationChannelDescription = getString(
             R.string.notification_browsing_session_channel_description,
-            getString(R.string.app_name)
+            getString(R.string.app_name),
         )
 
         val channel = NotificationChannel(
-            NOTIFICATION_CHANNEL_ID, notificationChannelName, NotificationManager.IMPORTANCE_MIN
+            NOTIFICATION_CHANNEL_ID,
+            notificationChannelName,
+            NotificationManager.IMPORTANCE_MIN,
         )
         channel.importance = NotificationManager.IMPORTANCE_LOW
         channel.description = notificationChannelDescription

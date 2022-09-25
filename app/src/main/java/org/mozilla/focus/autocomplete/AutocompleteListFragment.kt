@@ -43,6 +43,7 @@ import java.util.Collections
 import kotlin.coroutines.CoroutineContext
 
 typealias DomainFormatter = (String) -> String
+
 /**
  * Fragment showing settings UI listing all custom autocomplete domains entered by the user.
  */
@@ -61,7 +62,7 @@ open class AutocompleteListFragment : BaseSettingsLikeFragment(), CoroutineScope
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
+                target: RecyclerView.ViewHolder,
             ): Boolean {
                 val from = viewHolder.bindingAdapterPosition
                 val to = target.bindingAdapterPosition
@@ -100,7 +101,7 @@ open class AutocompleteListFragment : BaseSettingsLikeFragment(), CoroutineScope
             override fun canDropOver(
                 recyclerView: RecyclerView,
                 current: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
+                target: RecyclerView.ViewHolder,
             ): Boolean {
                 if (target is AddActionViewHolder) {
                     return false
@@ -108,12 +109,8 @@ open class AutocompleteListFragment : BaseSettingsLikeFragment(), CoroutineScope
 
                 return super.canDropOver(recyclerView, current, target)
             }
-        })
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
+        },
+    )
 
     /**
      * In selection mode the user can select and remove items. In non-selection mode the list can
@@ -124,7 +121,7 @@ open class AutocompleteListFragment : BaseSettingsLikeFragment(), CoroutineScope
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentAutocompleteCustomdomainsBinding.inflate(inflater, container, false)
         return binding.root
@@ -168,11 +165,11 @@ open class AutocompleteListFragment : BaseSettingsLikeFragment(), CoroutineScope
         _binding = null
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_autocomplete_list, menu)
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.menu_autocomplete_list, menu)
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu) {
+    override fun onPrepareMenu(menu: Menu) {
         val removeItem = menu.findItem(R.id.remove)
 
         removeItem?.let {
@@ -184,14 +181,14 @@ open class AutocompleteListFragment : BaseSettingsLikeFragment(), CoroutineScope
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
         R.id.remove -> {
             requireComponents.appStore.dispatch(
-                AppAction.OpenSettings(page = Screen.Settings.Page.SearchAutocompleteRemove)
+                AppAction.OpenSettings(page = Screen.Settings.Page.SearchAutocompleteRemove),
             )
             true
         }
-        else -> super.onOptionsItemSelected(item)
+        else -> false
     }
 
     /**
@@ -228,11 +225,11 @@ open class AutocompleteListFragment : BaseSettingsLikeFragment(), CoroutineScope
                 AddActionViewHolder.LAYOUT_ID ->
                     AddActionViewHolder(
                         this@AutocompleteListFragment,
-                        LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+                        LayoutInflater.from(parent.context).inflate(viewType, parent, false),
                     )
                 DomainViewHolder.LAYOUT_ID ->
                     DomainViewHolder(
-                        LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+                        LayoutInflater.from(parent.context).inflate(viewType, parent, false),
                     ) { AutocompleteDomainFormatter.format(it) }
                 else -> throw IllegalArgumentException("Unknown view type: $viewType")
             }
@@ -246,7 +243,7 @@ open class AutocompleteListFragment : BaseSettingsLikeFragment(), CoroutineScope
                     isSelectionMode(),
                     selectedDomains,
                     itemTouchHelper,
-                    this@AutocompleteListFragment
+                    this@AutocompleteListFragment,
                 )
             }
         }
@@ -276,7 +273,7 @@ open class AutocompleteListFragment : BaseSettingsLikeFragment(), CoroutineScope
      */
     private class DomainViewHolder(
         itemView: View,
-        val domainFormatter: DomainFormatter? = null
+        val domainFormatter: DomainFormatter? = null,
     ) : RecyclerView.ViewHolder(itemView) {
         val domainView: TextView = itemView.findViewById(R.id.domainView)
         val checkBoxView: CheckBox = itemView.findViewById(R.id.checkbox)
@@ -291,7 +288,7 @@ open class AutocompleteListFragment : BaseSettingsLikeFragment(), CoroutineScope
             isSelectionMode: Boolean,
             selectedDomains: MutableList<String>,
             itemTouchHelper: ItemTouchHelper,
-            fragment: AutocompleteListFragment
+            fragment: AutocompleteListFragment,
         ) {
             domainView.text = domainFormatter?.invoke(domain) ?: domain
 
@@ -336,12 +333,12 @@ open class AutocompleteListFragment : BaseSettingsLikeFragment(), CoroutineScope
      */
     private class AddActionViewHolder(
         val fragment: AutocompleteListFragment,
-        itemView: View
+        itemView: View,
     ) : RecyclerView.ViewHolder(itemView) {
         init {
             itemView.setOnClickListener {
                 fragment.requireComponents.appStore.dispatch(
-                    AppAction.OpenSettings(page = Screen.Settings.Page.SearchAutocompleteAdd)
+                    AppAction.OpenSettings(page = Screen.Settings.Page.SearchAutocompleteAdd),
                 )
             }
         }

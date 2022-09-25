@@ -21,35 +21,34 @@ import kotlin.collections.forEach as withEach
 
 class ExceptionsRemoveFragment : ExceptionsListFragment() {
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_autocomplete_remove, menu)
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.menu_autocomplete_remove, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
         R.id.remove -> {
             removeSelectedDomains(requireActivity().applicationContext)
             true
         }
-        else -> super.onOptionsItemSelected(item)
+        else -> false
     }
 
     private fun removeSelectedDomains(context: Context) {
         val exceptions = (binding.exceptionList.adapter as DomainListAdapter).selection()
         TrackingProtectionExceptions.selectedItemsRemoved.record(
-            TrackingProtectionExceptions.SelectedItemsRemovedExtra(exceptions.size)
+            TrackingProtectionExceptions.SelectedItemsRemovedExtra(exceptions.size),
         )
 
         TelemetryWrapper.removeExceptionDomains(exceptions.size)
 
         if (exceptions.isNotEmpty()) {
             launch(Main) {
-
                 exceptions.withEach { exception ->
                     context.components.trackingProtectionUseCases.removeException(exception)
                 }
 
                 requireComponents.appStore.dispatch(
-                    AppAction.NavigateUp(requireComponents.store.state.selectedTabId)
+                    AppAction.NavigateUp(requireComponents.store.state.selectedTabId),
                 )
             }
         }

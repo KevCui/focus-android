@@ -16,14 +16,14 @@ sealed class AppAction : Action {
      * The selected tab has changed.
      */
     data class SelectionChanged(
-        val tabId: String
+        val tabId: String,
     ) : AppAction()
 
     /**
      * Action for editing the URL of the tab with the given [tabId].
      */
     data class EditAction(
-        val tabId: String
+        val tabId: String,
     ) : AppAction()
 
     /**
@@ -35,7 +35,7 @@ sealed class AppAction : Action {
      * The user finished editing the URL of the tab with the given [tabId].
      */
     data class FinishEdit(
-        val tabId: String
+        val tabId: String,
     ) : AppAction()
 
     /**
@@ -68,6 +68,8 @@ sealed class AppAction : Action {
      * Forces showing the first run screen.
      */
     internal object ShowFirstRun : AppAction()
+
+    internal object ShowOnboardingSecondScreen : AppAction()
 
     /**
      * Forces showing the home screen.
@@ -103,4 +105,9 @@ sealed class AppAction : Action {
      * State of show Tracking Protection CFR has changed
      */
     data class ShowTrackingProtectionCfrChange(val value: Map<String, Boolean>) : AppAction()
+
+    /**
+     * State of Snackbar for promote search widget has changed
+     */
+    data class ShowSearchWidgetSnackBar(val value: Boolean) : AppAction()
 }

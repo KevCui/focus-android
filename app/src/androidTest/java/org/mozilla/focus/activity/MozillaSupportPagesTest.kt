@@ -27,7 +27,6 @@ class MozillaSupportPagesTest {
     @Before
     fun setUp() {
         featureSettingsHelper.setCfrForTrackingProtectionEnabled(false)
-        featureSettingsHelper.setNumberOfTabsOpened(4)
     }
 
     @After
@@ -90,7 +89,7 @@ class MozillaSupportPagesTest {
         val yourRightsString = getTargetContext.getString(
             R.string.your_rights_content1,
             getTargetContext.getString(R.string.app_name),
-            "Mozilla Public License"
+            "Mozilla Public License",
         )
 
         homeScreen {
